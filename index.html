@@ -50,14 +50,15 @@
       { id: "d", t: "5. Evening Digital Sunset", r: "Trigger: Brushing teeth at night", s: "Charge your phone outside the bedroom 45m before sleep and place tomorrow's water.", y: "Switch phone to Airplane Mode and place bedside water.", tm: 0, lt: "Letter: Tomorrow Starts Tonight", lb: "Preparing your environment tonight removes friction for tomorrow morning." }
     ];
 
-    let data = { c: {}, d: {} };
+    let data = { date: new Date().toDateString(), c: {}, d: {} };
     try { const saved = localStorage.getItem("sr_v2"); if (saved) data = JSON.parse(saved); } catch (e) {}
     let timers = {};
 
-    function save() { try { localStorage.setItem("sr_v2", JSON.stringify(data)); } catch (e) {} }
+    function save() { data.date = new Date().toDateString(); try { localStorage.setItem("sr_v2", JSON.stringify(data)); } catch (e) {} }
+    function checkMidnight() { const today = new Date().toDateString(); if (data.date !== today) { data.date = today; data.d = {}; save(); draw(); } }
     function unlocked(idx) { return idx === 0 || (data.c[HABITS[idx - 1].id] || 0) >= 4; }
-    function complete(id) { data.c[id] = (data.c[id] || 0) + 1; data.d[id] = true; save(); draw(); }
-    function resetAll() { data = { c: {}, d: {} }; save(); draw(); }
+    function complete(id) { checkMidnight(); data.c[id] = (data.c[id] || 0) + 1; data.d[id] = true; save(); draw(); }
+    function resetAll() { data = { date: new Date().toDateString(), c: {}, d: {} }; save(); draw(); }
 
     function runTimer(id, sec) {
       if (timers[id]) clearInterval(timers[id]);
@@ -102,6 +103,8 @@
     }
 
     document.getElementById("tinyMode").addEventListener("change", draw);
+    setInterval(checkMidnight, 60000);
+    checkMidnight();
     draw();
   </script>
 </body>
