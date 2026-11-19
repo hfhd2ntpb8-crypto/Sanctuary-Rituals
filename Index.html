@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sanctuary — Ethical Habit & Ritual Journey</title>
+  <style>
+    :root {
+      --bg: #fdf8f4;
+      --card: #ffffff;
+      --primary: #d96b43;
+      --primary-soft: #f9ebe4;
+      --secondary: #3b6e6c;
+      --text: #2c2a29;
+      --muted: #6e6a67;
+      --border: #ece4dd;
+      --success: #4a8c6f;
+    }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { margin: 0; background: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; }
+    .container { max-width: 680px; margin: 0 auto; }
+    header { text-align: center; padding: 24px 0 16px; }
+    header h1 { margin: 0; font-size: 1.8rem; color: var(--secondary); }
+    header p { margin: 6px 0 0; color: var(--muted); font-size: 0.95rem; }
+
+    .letter-card {
+      background: linear-gradient(135deg, #fff6f0 0%, #ffffff 100%);
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--primary);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+    }
+    .letter-tag { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary); font-weight: 700; }
+    .letter-card h2 { margin: 6px 0 10px; font-size: 1.2rem; }
+    .letter-card p { margin: 0; font-size: 0.96rem; color: #3f3c3a; }
+
+    .controls-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--card); border: 1px solid var(--border);
+      padding: 12px 16px; border-radius: 12px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+    }
+    .toggle-label { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+    .btn-ghost {
+      background: transparent; border: 1px solid var(--border); color: var(--muted);
+      padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.82rem;
+    }
+    .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+
+    .habit-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 18px 20px; margin-bottom: 14px;
+    }
+    .habit-card.locked { opacity: 0.55; background: #f7f4f1; }
+    .habit-title { font-size: 1.1rem; font-weight: 700; margin: 0; }
+    .habit-trigger { font-size: 0.85rem; color: var(--secondary); margin: 4px 0 8px; font-weight: 500; }
+    .habit-desc { font-size: 0.94rem; margin: 0 0 12px; }
+    .tiny-badge {
+      display: inline-block; background: var(--primary-soft); color: var(--primary);
+      font-size: 0.8rem; font-weight: 600; padding: 3px 8px; border-radius: 6px; margin-bottom: 10px;
+    }
+
+    .progress-dots { display: flex; gap: 6px; align-items: center; margin-top: 8px; }
+    .dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--border); }
+    .dot.filled { background: var(--success); border-color: var(--success); }
+    .progress-text { font-size: 0.8rem; color: var(--muted); margin-left: 6px; }
+
+    .action-row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--primary); color: #fff; border: none; padding: 10px 16px;
+      border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    }
+    .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+    .btn-timer {
+      background: var(--secondary); color: #fff; border: none; padding: 10px 14px;
+      border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+    }
+    .timer-display {
+      font-variant-numeric: tabular-nums; font-weight: 700; color: var(--secondary);
+      padding: 8px 12px; background: #eef5f4; border-radius: 8px; font-size: 0.95rem;
+    }
+    .celebration {
+      text-align: center; padding: 12px; background: #e9f6ef; color: var(--success);
+      border-radius: 10px; font-weight: 600; margin-bottom: 16px; display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Sanctuary Rituals</h1>
+      <p>Zero paywalls. Zero guilt. One tiny habit at a time.</p>
+    </header>
+
+    <div id="celebrationBanner" class="celebration"></div>
+    <section class="letter-card" id="coachLetter"></section>
+
+    <div class="controls-bar">
+      <label class="toggle-label">
+        <input type="checkbox" id="lowEnergyToggle" />
+        Low-Energy Mode (Show "Tiny Versions" only)
+      </label>
+      <div>
+        <button class="btn-ghost" onclick="exportBackup()">Export Backup</button>
+        <button class="btn-ghost" onclick="resetProgress()">Reset Journey</button>
+      </div>
+    </div>
+
+    <main id="habitList"></main>
+  </div>
+
+  <script>
+    const JOURNEY_DATA = [
+      {
+        id: "water",
+        title: "1. The Bedside Water Anchor",
+        trigger: "Trigger: Immediately after your feet touch the floor",
+        standard: "Drink one full glass of water before checking your phone or making coffee.",
+        tiny: "Take just three slow sips from your bedside water glass.",
+        timerSeconds: 0,
+        unlockAfter: 0,
+        letterTitle: "Coaching Letter: Start With Biology, Not Willpower",
+        letterBody: "You are not trying to overhaul your entire life today. You are proving to your brain that when you set a tiny intention, you follow through. Complete this anchor 4 times to unlock your next ritual."
+      },
+      {
+        id: "fuel",
+        title: "2. Nourishing Morning Fuel",
+        trigger: "Trigger: Right after setting down your empty water glass",
+        standard: "Eat a simple, protein-rich breakfast within an hour of waking.",
+        tiny: "Eat a handful of nuts, a spoonful of yoghurt, or one boiled egg.",
+        timerSeconds: 0,
+        unlockAfter: 4,
+        letterTitle: "Coaching Letter: Eliminate Decision Fatigue",
+        letterBody: "Your water anchor is taking root. By chaining breakfast directly to your water ritual, you remove the morning debate about what or when to eat."
+      },
+      {
+        id: "movement",
+        title: "3. The 5-Minute Movement Spark",
+        trigger: "Trigger: After clearing your breakfast plate",
+        standard: "Do 5 minutes of gentle stretching, walking, or light mobility.",
+        tiny: "Put on your shoes and stretch your arms overhead for 60 seconds.",
+        timerSeconds: 300,
+        unlockAfter: 4,
+        letterTitle: "Coaching Letter: Motion Creates Emotion",
+        letterBody: "You do not need to wait until you feel motivated to move. Gentle movement wakes up your nervous system so energy follows action."
+      },
+      {
+        id: "intention",
+        title: "4. The 3-Minute Intention Pause",
+        trigger: "Trigger: Sitting down after your movement spark",
+        standard: "Write down 1 main priority for today and 1 thing you appreciate.",
+        tiny: "Write down just 3 words describing how you want to approach today.",
+        timerSeconds: 180,
+        unlockAfter: 4,
+        letterTitle: "Coaching Letter: Calm Focus Over Busyness",
+        letterBody: "Before opening notifications or news, claim three quiet minutes for your own priorities. Notice how calm consistency beats heroic effort."
+      },
+      {
+        id: "sunset",
+        title: "5. Evening Digital Sunset",
+        trigger: "Trigger: After brushing your teeth at night",
+        standard: "Charge your phone outside the bedroom 45 minutes before sleep and place tomorrow's water glass.",
+        tiny: "Switch your phone to Airplane Mode and place your bedside water glass.",
+        timerSeconds: 0,
+        unlockAfter: 4,
+        letterTitle: "Coaching Letter: Tomorrow Starts Tonight",
+        letterBody: "Great mornings are built the night before. Preparing your environment tonight removes friction for tomorrow morning."
+      }
+    ];
+
+    const DEFAULT_STATE = {
+      completions: { water: 0, fuel: 0, movement: 0, intention: 0, sunset: 0 },
+      completedToday: {}
+    };
+
+    function loadState() {
+      try {
+        const raw = window.localStorage.getItem("sanctuary_rituals_v1");
+        return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_STATE));
+      } catch (e) {
+        return JSON.parse(JSON.stringify(DEFAULT_STATE));
+      }
+    }
+
+    function saveState() {
+      try {
+        window.localStorage.setItem("sanctuary_rituals_v1", JSON.stringify(state));
+      } catch (e) {
+        // Fallback silently to in-memory state when running from local file:// URL
+      }
+    }
+
+    let state = loadState();
+    let activeTimers = {};
+
+    function isUnlocked(index) {
+      if (index === 0) return true;
+      const prevHabit = JOURNEY_DATA[index - 1];
+      return (state.completions[prevHabit.id] || 0) >= JOURNEY_DATA[index].unlockAfter;
+    }
+
+    function getActiveLetter() {
+      for (let i = JOURNEY_DATA.length - 1; i >= 0; i--) {
+        if (isUnlocked(i)) return JOURNEY_DATA[i];
+      }
+      return JOURNEY_DATA[0];
+    }
+
+    function completeHabit(id, title) {
+      state.completions[id] = (state.completions[id] || 0) + 1;
+      state.completedToday[id] = true;
+      saveState();
+      showCelebration("Ritual logged: " + title + ". Small steps build lasting momentum.");
+      render();
+    }
+
+    function showCelebration(msg) {
+      const banner = document.getElementById("celebrationBanner");
+      banner.textContent = msg;
+      banner.style.display = "block";
+      setTimeout(function() { banner.style.display = "none"; }, 4500);
+    }
+
+    function startTimer(id, seconds) {
+      if (activeTimers[id]) clearInterval(activeTimers[id].interval);
+      let remaining = seconds;
+      const displayEl = document.getElementById("timer-" + id);
+      displayEl.style.display = "inline-block";
+
+      function updateText() {
+        const mins = Math.floor(remaining / 60);
+        const secs = String(remaining % 60).padStart(2, "0");
+Use code with caution.
+displayEl.textContent = mins + ":" + secs;
+}
+updateText();
+activeTimers[id] = {
+interval: setInterval(function() {
+remaining--;
+if (remaining <= 0) {
+clearInterval(activeTimers[id].interval);
+displayEl.textContent = "Complete!";
+} else {
+updateText();
+}
+}, 1000)
+};
+}
+function exportBackup() {
+const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+const a = document.createElement("a");
+a.setAttribute("href", dataStr);
+a.setAttribute("download", "sanctuary-rituals-backup.json");
+document.body.appendChild(a);
+a.click();
+a.remove();
+}
+function resetProgress() {
+try { window.localStorage.removeItem("sanctuary_rituals_v1"); } catch (e) {}
+state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+render();
+}
+function render() {
+const lowEnergy = document.getElementById("lowEnergyToggle").checked;
+const letter = getActiveLetter();
+document.getElementById("coachLetter").innerHTML =
+'Current Journey Guidance' +
+'' + letter.letterTitle + '' +
+'' + letter.letterBody + '';
+const listEl = document.getElementById("habitList");
+listEl.innerHTML = "";
+JOURNEY_DATA.forEach(function(habit, idx) {
+const unlocked = isUnlocked(idx);
+const count = state.completions[habit.id] || 0;
+const doneToday = !!state.completedToday[habit.id];
+let dotsHtml = "";
+for (let d = 1; d <= 4; d++) {
+dotsHtml += '';
+}
+const card = document.createElement("article");
+card.className = "habit-card " + (unlocked ? "" : "locked");
+let inner = '' + habit.title + (unlocked ? '' : ' 🔒') + '' +
+'' + habit.trigger + '';
+if (unlocked) {
+if (lowEnergy) {
+inner += 'Low-Energy Tiny Version Active';
+}
+inner += '' + (lowEnergy ? habit.tiny : habit.standard) + '' +
+'' + dotsHtml +
+'' + count + '/4 days to unlock next step (Total: ' + count + ')' +
+'' +
+'<button class="btn-primary" onclick="completeHabit('' + habit.id + '', '' + habit.title + '')" ' + (doneToday ? 'disabled' : '') + '>' +
+(doneToday ? 'Completed Today ✓' : 'Complete Ritual') + '';
+if (habit.timerSeconds > 0) {
+inner += 'Start ' + Math.floor(habit.timerSeconds / 60) + 'm Timer' +
+'';
+}
+inner += '';
+} else {
+inner += 'Complete the previous ritual 4 times to unlock this step without overwhelm.';
+}
+card.innerHTML = inner;
+listEl.appendChild(card);
+});
+}
+document.getElementById("lowEnergyToggle").addEventListener("change", render);
+render();
