@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sanctuary Rituals</title>
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+    body { margin: 0; background: #fdf8f4; color: #2c2a29; line-height: 1.5; padding: 18px; }
+    .wrap { max-width: 640px; margin: 0 auto; }
+    h1 { margin: 0; text-align: center; color: #3b6e6c; font-size: 1.7rem; }
+    .sub { text-align: center; color: #6e6a67; font-size: 0.9rem; margin: 4px 0 18px; }
+    .letter { background: #fff6f0; border: 1px solid #ece4dd; border-left: 5px solid #d96b43; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+    .letter h2 { margin: 0 0 6px; font-size: 1.1rem; color: #d96b43; }
+    .letter p { margin: 0; font-size: 0.94rem; }
+    .bar { display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid #ece4dd; padding: 10px 14px; border-radius: 12px; margin-bottom: 16px; font-size: 0.88rem; }
+    .card { background: #fff; border: 1px solid #ece4dd; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+    .card.locked { opacity: 0.55; background: #f6f2ee; }
+    .title { font-weight: 700; font-size: 1.05rem; }
+    .trig { color: #3b6e6c; font-size: 0.84rem; margin: 3px 0 8px; font-weight: 500; }
+    .dots { margin: 8px 0; font-size: 0.82rem; color: #6e6a67; }
+    .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid #ccc; margin-right: 4px; vertical-align: middle; }
+    .dot.on { background: #4a8c6f; border-color: #4a8c6f; }
+    button { border: none; border-radius: 8px; padding: 9px 14px; font-weight: 600; cursor: pointer; font-size: 0.88rem; margin-right: 8px; margin-top: 6px; }
+    .btn-go { background: #d96b43; color: #fff; }
+    .btn-go:disabled { background: #ccc; }
+    .btn-tm { background: #3b6e6c; color: #fff; }
+    .btn-sm { background: transparent; border: 1px solid #ccc; color: #555; padding: 5px 10px; margin: 0; }
+    .tm-txt { font-weight: 700; color: #3b6e6c; font-size: 0.92rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Sanctuary Rituals</h1>
+    <div class="sub">Zero paywalls. Zero guilt. One tiny habit at a time.</div>
+    <div class="letter" id="letterBox"></div>
+    <div class="bar">
+      <label><input type="checkbox" id="tinyMode" /> Low-Energy Tiny Mode</label>
+      <button class="btn-sm" onclick="resetAll()">Reset</button>
+    </div>
+    <div id="cardsBox"></div>
+  </div>
+
+  <script>
+    const HABITS = [
+      { id: "w", t: "1. Bedside Water Anchor", r: "Trigger: Feet touch the floor", s: "Drink one full glass of water before checking your phone.", y: "Take 3 slow sips from your bedside water glass.", tm: 0, lt: "Letter: Start With Biology", lb: "Prove to your brain that when you set a tiny intention, you follow through. Complete this 4 times to unlock Step 2." },
+      { id: "f", t: "2. Nourishing Morning Fuel", r: "Trigger: Putting down your water glass", s: "Eat a protein-rich breakfast within an hour of waking.", y: "Eat a handful of nuts or one boiled egg.", tm: 0, lt: "Letter: Remove Decision Fatigue", lb: "Chaining breakfast directly to your water ritual eliminates the morning debate about what to eat." },
+      { id: "m", t: "3. 5-Minute Movement Spark", r: "Trigger: Clearing your breakfast plate", s: "Do 5 minutes of gentle stretching or walking.", y: "Stretch your arms overhead for 60 seconds.", tm: 300, lt: "Letter: Motion Creates Emotion", lb: "Gentle movement wakes up your nervous system so energy follows action." },
+      { id: "i", t: "4. 3-Minute Intention Pause", r: "Trigger: Sitting down after movement", s: "Write down 1 main priority and 1 thing you appreciate.", y: "Write 3 words describing today's focus.", tm: 180, lt: "Letter: Calm Focus Over Busyness", lb: "Claim three quiet minutes for your own priorities before opening notifications." },
+      { id: "d", t: "5. Evening Digital Sunset", r: "Trigger: Brushing teeth at night", s: "Charge your phone outside the bedroom 45m before sleep and place tomorrow's water.", y: "Switch phone to Airplane Mode and place bedside water.", tm: 0, lt: "Letter: Tomorrow Starts Tonight", lb: "Preparing your environment tonight removes friction for tomorrow morning." }
+    ];
+
+    let data = { c: {}, d: {} };
+    try { const saved = localStorage.getItem("sr_v2"); if (saved) data = JSON.parse(saved); } catch (e) {}
+    let timers = {};
+
+    function save() { try { localStorage.setItem("sr_v2", JSON.stringify(data)); } catch (e) {} }
+    function unlocked(idx) { return idx === 0 || (data.c[HABITS[idx - 1].id] || 0) >= 4; }
+    function complete(id) { data.c[id] = (data.c[id] || 0) + 1; data.d[id] = true; save(); draw(); }
+    function resetAll() { data = { c: {}, d: {} }; save(); draw(); }
+
+    function runTimer(id, sec) {
+      if (timers[id]) clearInterval(timers[id]);
+      let left = sec;
+      const el = document.getElementById("tm-" + id);
+      const show = () => { el.textContent = Math.floor(left / 60) + ":" + String(left % 60).padStart(2, "0"); };
+      show();
+      timers[id] = setInterval(() => {
+        left--;
+        if (left <= 0) { clearInterval(timers[id]); el.textContent = "Done!"; } else show();
+      }, 1000);
+    }
+
+    function draw() {
+      const tiny = document.getElementById("tinyMode").checked;
+      let active = HABITS[0];
+      for (let i = HABITS.length - 1; i >= 0; i--) { if (unlocked(i)) { active = HABITS[i]; break; } }
+      document.getElementById("letterBox").innerHTML = "<h2>" + active.lt + "</h2><p>" + active.lb + "</p>";
+
+      let html = "";
+      HABITS.forEach((h, i) => {
+        const open = unlocked(i);
+        const cnt = data.c[h.id] || 0;
+        const done = !!data.d[h.id];
+        let dots = "";
+        for (let k = 1; k <= 4; k++) dots += '<span class="dot ' + (cnt >= k ? "on" : "") + '"></span>';
+
+        html += '<div class="card ' + (open ? "" : "locked") + '">';
+        html += '<div class="title">' + h.t + (open ? "" : " 🔒") + '</div>';
+        html += '<div class="trig">' + h.r + '</div>';
+        if (open) {
+          html += '<div>' + (tiny ? h.y : h.s) + '</div>';
+          html += '<div class="dots">' + dots + ' ' + cnt + '/4 days</div>';
+          html += '<button class="btn-go" onclick="complete(\'' + h.id + '\')" ' + (done ? "disabled" : "") + '>' + (done ? "Completed Today ✓" : "Complete Ritual") + '</button>';
+          if (h.tm > 0) html += '<button class="btn-tm" onclick="runTimer(\'' + h.id + '\',' + h.tm + ')">Start Timer</button><span class="tm-txt" id="tm-' + h.id + '"></span>';
+        } else {
+          html += '<div>Complete previous ritual 4 times to unlock.</div>';
+        }
+        html += '</div>';
+      });
+      document.getElementById("cardsBox").innerHTML = html;
+    }
+
+    document.getElementById("tinyMode").addEventListener("change", draw);
+    draw();
+  </script>
+</body>
+</html>
