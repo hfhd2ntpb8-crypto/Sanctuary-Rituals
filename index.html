@@ -1,111 +1,1092 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sanctuary Rituals</title>
-  <style>
-    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
-    body { margin: 0; background: #fdf8f4; color: #2c2a29; line-height: 1.5; padding: 18px; }
-    .wrap { max-width: 640px; margin: 0 auto; }
-    h1 { margin: 0; text-align: center; color: #3b6e6c; font-size: 1.7rem; }
-    .sub { text-align: center; color: #6e6a67; font-size: 0.9rem; margin: 4px 0 18px; }
-    .letter { background: #fff6f0; border: 1px solid #ece4dd; border-left: 5px solid #d96b43; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
-    .letter h2 { margin: 0 0 6px; font-size: 1.1rem; color: #d96b43; }
-    .letter p { margin: 0; font-size: 0.94rem; }
-    .bar { display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid #ece4dd; padding: 10px 14px; border-radius: 12px; margin-bottom: 16px; font-size: 0.88rem; }
-    .card { background: #fff; border: 1px solid #ece4dd; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
-    .card.locked { opacity: 0.55; background: #f6f2ee; }
-    .title { font-weight: 700; font-size: 1.05rem; }
-    .trig { color: #3b6e6c; font-size: 0.84rem; margin: 3px 0 8px; font-weight: 500; }
-    .dots { margin: 8px 0; font-size: 0.82rem; color: #6e6a67; }
-    .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid #ccc; margin-right: 4px; vertical-align: middle; }
-    .dot.on { background: #4a8c6f; border-color: #4a8c6f; }
-    button { border: none; border-radius: 8px; padding: 9px 14px; font-weight: 600; cursor: pointer; font-size: 0.88rem; margin-right: 8px; margin-top: 6px; }
-    .btn-go { background: #d96b43; color: #fff; }
-    .btn-go:disabled { background: #ccc; }
-    .btn-tm { background: #3b6e6c; color: #fff; }
-    .btn-sm { background: transparent; border: 1px solid #ccc; color: #555; padding: 5px 10px; margin: 0; }
-    .tm-txt { font-weight: 700; color: #3b6e6c; font-size: 0.92rem; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Sanctuary">
+<meta name="theme-color" content="#fdf8f4">
+<meta name="description" content="Sanctuary Rituals: a free, private, 90-day habit-coaching program. No accounts, no paywalls, no guilt.">
+<title>Sanctuary Rituals</title>
+<style>
+:root{
+  --bg:#fdf8f4; --teal:#3b6e6c; --teal-d:#2c5452; --teal-soft:#e3eeec;
+  --terra:#d96b43; --terra-d:#b9542f; --terra-soft:#fbe8df;
+  --ink:#2d3837; --muted:#6a7472; --card:#ffffff; --line:#ece1d6; --gold:#e7b75f;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --r:18px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;padding-bottom:calc(40px + env(safe-area-inset-bottom))}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:disabled{cursor:default}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:600;letter-spacing:.2px;margin:0}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+
+/* Header */
+.top{padding-top:calc(14px + env(safe-area-inset-top))}
+.title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.hello{margin:0;color:var(--muted);font-size:15px}
+.top h1{font-size:28px;color:var(--teal-d);line-height:1.2}
+.icon-btn{border:1px solid var(--line);background:var(--card);border-radius:50%;width:44px;height:44px;font-size:20px;flex:none;color:var(--teal)}
+.meter{height:8px;background:var(--teal-soft);border-radius:99px;overflow:hidden;margin:14px 0 6px}
+.meter-fill{height:100%;background:linear-gradient(90deg,var(--teal),#5a9592);border-radius:99px;transition:width .6s ease}
+.dayline{margin:0;font-size:14px;color:var(--muted)}
+.dayline b{color:var(--teal-d)}
+.rough-btn{margin-top:12px;width:100%;min-height:46px;border-radius:14px;border:1.5px dashed #d9c9bb;background:transparent;color:var(--muted);font-size:15px;padding:8px 14px;text-align:left}
+.rough-btn[aria-pressed="true"]{border:1.5px solid var(--terra);background:var(--terra-soft);color:var(--terra-d);font-weight:600}
+
+/* Tabs */
+.tabbar{position:sticky;top:0;z-index:20;background:rgba(253,248,244,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);margin-top:12px;padding-top:env(safe-area-inset-top)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:8px 14px;min-height:40px;font-size:15px;color:var(--ink);white-space:nowrap}
+.tab.on{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:600}
+.tab.locked{color:#a9a29b}
+
+/* Cards */
+main{padding-top:16px}
+.section-h{font-family:var(--serif);font-size:20px;color:var(--teal-d);margin:26px 2px 10px}
+.section-h small{font-family:var(--sans);font-size:13px;color:var(--muted);font-weight:400;margin-left:6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin:0 0 14px;box-shadow:0 2px 10px rgba(80,60,40,.05)}
+.card.focus{border:2px solid var(--teal);box-shadow:0 6px 22px rgba(59,110,108,.12)}
+.card.is-done{background:#fbfdfc}
+.card-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+.time{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted)}
+.tag{font-size:12px;border-radius:99px;padding:3px 10px;font-weight:600;white-space:nowrap}
+.tag-focus{background:var(--teal);color:#fff}
+.tag-est{background:var(--teal-soft);color:var(--teal-d)}
+.tag-prev{background:#f1ece6;color:var(--muted)}
+.card h3{font-size:21px;line-height:1.25;color:var(--ink)}
+.sub{margin:4px 0 10px;color:var(--muted);font-size:15px}
+.cue{margin:10px 0;font-size:15px;background:#faf5f0;border-radius:12px;padding:10px 12px}
+.cue strong{color:var(--teal-d)}
+.version{border-left:4px solid var(--teal);padding:4px 0 4px 12px;margin:12px 0}
+.version p{margin:2px 0 0}
+.v-label{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--teal);font-weight:700}
+.v-tiny{border-left-color:var(--terra)}
+.v-tiny .v-label{color:var(--terra-d)}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.ghost{border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 12px;min-height:44px;font-size:15px;color:var(--teal-d)}
+.ghost:disabled{color:var(--terra-d);background:var(--terra-soft);border-color:#f2cdbd}
+.done-btn{width:100%;min-height:52px;border:0;border-radius:14px;background:var(--terra);color:#fff;font-size:17px;font-weight:600;margin-top:12px;box-shadow:0 4px 12px rgba(217,107,67,.25)}
+.done-btn:active{transform:scale(.99)}
+.done-btn.locked{background:var(--teal-soft);color:var(--teal-d);box-shadow:none}
+.done-row{display:flex;gap:10px;align-items:center}
+.done-row .done-btn{flex:1}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:14px;padding:12px 6px;margin-top:12px}
+.tiny-note{margin:6px 0 0;font-size:13px;color:var(--terra-d);text-align:center}
+.note-wrap{display:block;margin-top:12px}
+.note-wrap span{display:block;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:4px}
+.note{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-size:16px;background:#fffdfb;color:var(--ink)}
+.note:focus{outline:2px solid var(--teal-soft);border-color:var(--teal)}
+.saved{font-size:12px;color:var(--teal);opacity:0;transition:opacity .3s;margin-left:6px}
+.saved.show{opacity:1}
+
+/* Focus progress */
+.focus-box{background:var(--teal-soft);border-radius:14px;padding:12px 14px;margin:10px 0}
+.focus-box p{margin:0;font-size:15px}
+.dots{display:flex;gap:8px;margin:8px 0 4px}
+.dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--teal);background:#fff}
+.dot.full{background:var(--teal)}
+.dot.today{box-shadow:0 0 0 3px rgba(217,107,67,.35)}
+
+/* Timer */
+.timer{margin:14px 0 4px;background:#faf5f0;border-radius:16px;padding:14px;text-align:center}
+.t-display{font-family:var(--serif);font-size:44px;color:var(--teal-d);font-variant-numeric:tabular-nums;line-height:1.1}
+.t-phase{min-height:24px;font-size:16px;color:var(--terra-d);font-weight:600;margin:4px 0}
+.t-btns{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.t-btns button{min-width:110px;min-height:46px;border-radius:12px;border:0;background:var(--teal);color:#fff;font-weight:600}
+.t-btns button.sec{background:#fff;color:var(--teal-d);border:1px solid var(--line)}
+.t-hint{font-size:12px;color:var(--muted);margin-top:8px}
+.breath-wrap{height:150px;display:flex;align-items:center;justify-content:center}
+.breath-circle{width:130px;height:130px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#f6c9b3,var(--terra));
+  transform:scale(.55);transition:transform 1s ease-in-out;opacity:.9}
+
+/* Banners */
+.banner{border-radius:var(--r);padding:16px 18px;margin:0 0 16px;background:var(--terra-soft);border:1px solid #f3cdbd}
+.banner h3{font-size:19px;color:var(--terra-d);margin-bottom:4px}
+.banner p{margin:4px 0 10px;font-size:15px}
+.banner .row{margin:6px 0 0}
+.pill-btn{border:0;border-radius:12px;padding:10px 14px;min-height:44px;background:var(--terra);color:#fff;font-weight:600;font-size:15px}
+.pill-btn.sec{background:#fff;color:var(--terra-d);border:1px solid #f0c7b6}
+.summary{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:16px}
+.ring{width:54px;height:54px;flex:none}
+.summary p{margin:0;font-size:15px}
+.summary b{font-family:var(--serif);font-size:18px;color:var(--teal-d)}
+.empty{color:var(--muted);font-size:15px;background:#faf5f0;border-radius:14px;padding:14px;margin:0 0 14px}
+
+/* Journey header */
+.j-head{background:linear-gradient(160deg,var(--teal),#4f8784);color:#fff;border-radius:22px;padding:20px;margin-bottom:16px}
+.j-head .eyebrow{color:#d7ebe9}
+.j-head h2{font-size:25px;line-height:1.2;margin:2px 0 6px}
+.j-head p{margin:6px 0 0;font-size:15px;color:#eef6f5}
+.j-meter{height:6px;background:rgba(255,255,255,.25);border-radius:99px;margin-top:14px;overflow:hidden}
+.j-meter div{height:100%;background:var(--gold);border-radius:99px}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);margin:0}
+.lock-card{background:#f7f2ed;border:1px dashed #dccfc2;border-radius:var(--r);padding:14px 16px;margin-bottom:10px;color:#8b847d}
+.lock-card h3{font-size:18px;color:#8b847d}
+.lock-card p{margin:4px 0 0;font-size:14px}
+
+/* Modal */
+.modal{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.modal[hidden]{display:none}
+.backdrop{position:absolute;inset:0;background:rgba(35,45,44,.45);animation:fade .2s ease}
+.sheet{position:relative;background:var(--bg);width:100%;max-width:640px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  border-radius:24px 24px 0 0;padding:26px 20px calc(30px + env(safe-area-inset-bottom));animation:up .28s ease}
+@media(min-width:700px){.modal{align-items:center}.sheet{border-radius:24px;max-height:86vh}}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.x{position:sticky;top:0;float:right;margin:-10px -6px 0 0;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:22px;line-height:1;color:var(--muted);z-index:2}
+.sheet h2{font-size:26px;color:var(--teal-d);line-height:1.2;margin:6px 0 12px}
+.letter p{margin:0 0 14px;font-family:var(--serif);font-size:18px;line-height:1.65}
+.letter h4{font-family:var(--sans);font-size:12px;text-transform:uppercase;letter-spacing:1.4px;color:var(--terra-d);margin:20px 0 6px}
+.letter .salute{font-style:italic;color:var(--teal-d)}
+.letter .sign{font-style:italic;color:var(--teal-d);margin-top:18px}
+.versions{display:grid;gap:10px;margin-top:20px}
+.versions div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:15px}
+.versions p{margin:4px 0 0}
+.past{margin-top:20px}
+.past li{font-size:15px;margin-bottom:6px}
+.past li span{color:var(--muted);font-size:13px;margin-right:6px}
+.field{display:block;margin:12px 0}
+.field span{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+.field input[type=text],.field textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit;font-size:16px;background:#fff;color:var(--ink)}
+.field textarea{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-size:13px}
+.switch-row{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:10px 0}
+.switch-row p{margin:0;font-size:15px}
+.switch-row small{display:block;color:var(--muted);font-size:13px}
+.sw{position:relative;width:52px;height:32px;border-radius:99px;border:0;background:#d8d0c8;flex:none;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.sw[aria-pressed="true"]{background:var(--teal)}
+.sw[aria-pressed="true"]::after{transform:translateX(20px)}
+.btn-col{display:grid;gap:10px;margin:12px 0}
+.btn-col button{min-height:48px;border-radius:14px;border:1px solid var(--line);background:#fff;font-weight:600;color:var(--teal-d)}
+.btn-col button.primary{background:var(--teal);color:#fff;border-color:var(--teal)}
+.btn-col button.danger{color:#a5432a;border-color:#efc9bc}
+.small{font-size:13px;color:var(--muted)}
+.how li{margin-bottom:8px;font-size:15px}
+.celebrate{text-align:center}
+.celebrate .big{font-size:54px;margin:4px 0}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);
+  background:var(--teal-d);color:#fff;padding:12px 18px;border-radius:14px;font-size:15px;max-width:90vw;opacity:0;pointer-events:none;
+  transition:all .3s ease;z-index:80;box-shadow:0 8px 24px rgba(0,0,0,.18);text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Sanctuary Rituals</h1>
-    <div class="sub">Zero paywalls. Zero guilt. One tiny habit at a time.</div>
-    <div class="letter" id="letterBox"></div>
-    <div class="bar">
-      <label><input type="checkbox" id="tinyMode" /> Low-Energy Tiny Mode</label>
-      <button class="btn-sm" onclick="resetAll()">Reset</button>
+
+<header class="top wrap">
+  <div class="title-row">
+    <div>
+      <p class="hello" id="hello">Welcome</p>
+      <h1>Sanctuary Rituals</h1>
     </div>
-    <div id="cardsBox"></div>
+    <button class="icon-btn" data-act="settings" aria-label="Settings and backup">⚙</button>
   </div>
+  <div class="meter" aria-hidden="true"><div class="meter-fill" id="meterFill" style="width:0"></div></div>
+  <p class="dayline" id="dayline"></p>
+  <button class="rough-btn" id="roughBtn" data-act="rough" aria-pressed="false"></button>
+</header>
 
-  <script>
-    const HABITS = [
-      { id: "w", t: "1. Bedside Water Anchor", r: "Trigger: Feet touch the floor", s: "Drink one full glass of water before checking your phone.", y: "Take 3 slow sips from your bedside water glass.", tm: 0, lt: "Letter: Start With Biology", lb: "Prove to your brain that when you set a tiny intention, you follow through. Complete this 4 times to unlock Step 2." },
-      { id: "f", t: "2. Nourishing Morning Fuel", r: "Trigger: Putting down your water glass", s: "Eat a protein-rich breakfast within an hour of waking.", y: "Eat a handful of nuts or one boiled egg.", tm: 0, lt: "Letter: Remove Decision Fatigue", lb: "Chaining breakfast directly to your water ritual eliminates the morning debate about what to eat." },
-      { id: "m", t: "3. 5-Minute Movement Spark", r: "Trigger: Clearing your breakfast plate", s: "Do 5 minutes of gentle stretching or walking.", y: "Stretch your arms overhead for 60 seconds.", tm: 300, lt: "Letter: Motion Creates Emotion", lb: "Gentle movement wakes up your nervous system so energy follows action." },
-      { id: "i", t: "4. 3-Minute Intention Pause", r: "Trigger: Sitting down after movement", s: "Write down 1 main priority and 1 thing you appreciate.", y: "Write 3 words describing today's focus.", tm: 180, lt: "Letter: Calm Focus Over Busyness", lb: "Claim three quiet minutes for your own priorities before opening notifications." },
-      { id: "d", t: "5. Evening Digital Sunset", r: "Trigger: Brushing teeth at night", s: "Charge your phone outside the bedroom 45m before sleep and place tomorrow's water.", y: "Switch phone to Airplane Mode and place bedside water.", tm: 0, lt: "Letter: Tomorrow Starts Tonight", lb: "Preparing your environment tonight removes friction for tomorrow morning." }
-    ];
+<div class="tabbar"><nav class="tabs wrap" id="tabs" aria-label="Journeys"></nav></div>
 
-    let data = { date: new Date().toDateString(), c: {}, d: {} };
-    try { const saved = localStorage.getItem("sr_v2"); if (saved) data = JSON.parse(saved); } catch (e) {}
-    let timers = {};
+<main class="wrap" id="main"></main>
 
-    function save() { data.date = new Date().toDateString(); try { localStorage.setItem("sr_v2", JSON.stringify(data)); } catch (e) {} }
-    function checkMidnight() { const today = new Date().toDateString(); if (data.date !== today) { data.date = today; data.d = {}; save(); draw(); } }
-    function unlocked(idx) { return idx === 0 || (data.c[HABITS[idx - 1].id] || 0) >= 4; }
-    function complete(id) { checkMidnight(); data.c[id] = (data.c[id] || 0) + 1; data.d[id] = true; save(); draw(); }
-    function resetAll() { data = { date: new Date().toDateString(), c: {}, d: {} }; save(); draw(); }
+<div class="modal" id="modal" hidden>
+  <div class="backdrop" data-act="close"></div>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <button class="x" data-act="close" aria-label="Close">×</button>
+    <div id="sheetBody"></div>
+  </div>
+</div>
+<input type="file" id="importFile" accept="application/json,.json,text/plain" hidden>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    function runTimer(id, sec) {
-      if (timers[id]) clearInterval(timers[id]);
-      let left = sec;
-      const el = document.getElementById("tm-" + id);
-      const show = () => { el.textContent = Math.floor(left / 60) + ":" + String(left % 60).padStart(2, "0"); };
-      show();
-      timers[id] = setInterval(() => {
-        left--;
-        if (left <= 0) { clearInterval(timers[id]); el.textContent = "Done!"; } else show();
-      }, 1000);
+<script>
+'use strict';
+/* ==========================================================================
+   SANCTUARY RITUALS · 90-day program
+   Single file · no dependencies · no accounts · progress lives on this device.
+   ========================================================================== */
+
+/* ---------- 1. Curriculum ---------- */
+const JOURNEYS = [
+  { title:'An Unexpected Energy', short:'Energy', icon:'☀', range:'Days 1–20', req:4,
+    blurb:'Five small morning-to-midday rituals — water, fuel, movement, intention and a gentle reset — so energy becomes something you build rather than chase.',
+    outro:'You have built a morning that looks after you. Those five rituals now run in the background while we turn towards the mind.' },
+  { title:'Deep Focus & Mental Clarity', short:'Focus', icon:'◎', range:'Days 21–45', req:5,
+    blurb:'A calmer way of working: fewer interruptions, one thing at a time, real pauses between tasks, and noticing what you actually achieved.',
+    outro:'Your attention is yours again. Next, we protect the thing that refuels everything else: sleep.' },
+  { title:'Restorative Sleep & Digital Sunset', short:'Sleep', icon:'☾', range:'Days 46–70', req:5,
+    blurb:'Evenings that wind down instead of winding up: a caffeine curfew, a digital sunset, a primed room, a calming breath and a grateful close.',
+    outro:'Your evenings now lead somewhere restful. The final journey turns towards the heart — resilience, connection and joy.' },
+  { title:'Emotional Resilience & Joy', short:'Joy', icon:'♡', range:'Days 71–90', req:4,
+    blurb:'Light, kindness, connection, play and honest reflection — the rituals that make a life feel worth the effort of the other habits.',
+    outro:'You have walked all ninety practice days. Everything you built is yours to keep, shape and simplify.' }
+];
+
+const TIME_LABEL = { morning:'Morning', day:'Daytime', evening:'Evening', weekly:'Weekly' };
+
+const HABITS = [
+/* ---------------- Journey 1 ---------------- */
+{ id:'h1', j:0, order:10, time:'morning',
+  title:'The Bedside Water Anchor', sub:'Hydration before screens',
+  cue:'When my feet touch the floor in the morning, I drink my water before I unlock my phone.',
+  std:'Drink a full glass of water (about 250–300 ml) before you look at any screen.',
+  tiny:'Take three slow sips of water before you pick up your phone.',
+  timer:null,
+  letter:[
+`You have just come through the longest stretch of your day without a drink. Overnight your body keeps working — breathing out moisture, repairing tissue, running the quiet maintenance of sleep — and you wake slightly behind on fluids. Research on even mild dehydration links it with lower mood, more fatigue and fuzzier concentration. But this ritual is about more than water. It is an anchor: a first, almost effortless win that happens before your phone hands your attention to everybody else's priorities. Each time you do it, you collect a small piece of evidence that you are someone who follows through, and that self-belief is what every later habit is built on.`,
+`Behavioural science is blunt about willpower: we are far more reliable when the right action is the easiest one in front of us. So design the morning the night before. Fill a glass or bottle as you brush your teeth and place it on your bedside table, ideally between you and your phone, so your hand finds the water first. The cue is simple and physical — feet on the floor, then water. Keep the same glass in the same spot every night; repetition in a stable context is how an action stops needing a decision at all.`,
+`If you forgot to fill the glass, then walk to the kitchen and drink one there before you unlock your phone — the order matters more than the location. If cold water feels unappealing first thing, then try it at room temperature or with a slice of lemon. If you wake late and everything is rushing, then the tiny version is enough: three sips, and the anchor still holds. And if yesterday slipped by entirely, nothing is lost. The only rule here is gentle: try not to miss twice. Today's three sips matter more than any perfect streak ever could.`
+  ]},
+{ id:'h2', j:0, order:20, time:'morning',
+  title:'Nourishing Morning Fuel', sub:'A protein breakfast, stacked onto your water',
+  cue:'After I finish my glass of water, I eat a breakfast that includes protein.',
+  std:'Eat a breakfast with a source of protein — eggs, yoghurt, cottage cheese, nut butter, fish, beans or last night\'s leftovers.',
+  tiny:'Eat one protein bite: a boiled egg, a spoon of nut butter, a handful of nuts or a glass of milk.',
+  timer:null,
+  letter:[
+`A breakfast built around protein tends to keep you satisfied for longer than one made mostly of quick carbohydrates, and many people notice steadier energy through the morning rather than a rise and a mid-morning slump. There is a second, quieter benefit: deciding breakfast in advance removes one more choice from a brain that has only just woken up. Every decision draws on the same limited pool of attention, and tired brains default to whatever is closest — often the biscuit tin. A planned breakfast protects you from that default.`,
+`This habit is stacked directly onto your water: "After I finish my glass, I make my breakfast." Stacking works because the first habit becomes the reminder for the second. Choose two or three go-to breakfasts so you never have to think — eggs on toast, Greek yoghurt with fruit, leftovers, or a smoothie with milk or yoghurt. Then make them easy: boil a batch of eggs on the weekend, put the yoghurt at eye level in the fridge, and set the bowl and spoon out the night before. What you can see, you will choose.`,
+`If you have no appetite in the morning, then a single protein bite counts — a handful of nuts or a glass of milk is a real start. If you are running late, then keep one grab-and-go option ready, like a boiled egg or a tub of yoghurt. If eating early doesn't suit you, then make this your first meal whenever it arrives and let the cue be "after my first drink of the day". And if a doctor or dietitian has given you specific advice about food or meal timing, always follow theirs first — this ritual is meant to fit your life, not override your care.`
+  ]},
+{ id:'h3', j:0, order:30, time:'morning',
+  title:'The 5-Minute Movement Spark', sub:'Gentle morning mobility or a short walk',
+  cue:'After I put my breakfast dishes in the sink, I start the 5-minute timer and move.',
+  std:'Move gently for five minutes — a short walk, stretching, or seated mobility like arm circles, shoulder rolls and ankle circles. Whatever your body allows today.',
+  tiny:'For 60 seconds, stand or sit tall, reach both arms overhead and roll your shoulders slowly.',
+  timer:{std:300, tiny:60},
+  letter:[
+`Movement is one of the quickest ways to tell your body that the day has begun. Even a few minutes raises your heart rate a little, sends more blood to muscles and brain, and nudges your body temperature up — all part of the natural shift from sleep into alertness. Studies of short bouts of activity regularly find improvements in mood and energy afterwards. The secret of this ritual is its size: five minutes is short enough that the part of you that resists exercise can't build a convincing argument. We are not training for anything. We are simply waking the body kindly.`,
+`Stack it onto breakfast: "After I put my dishes in the sink, I start the timer." Lower the friction the night before by leaving your shoes by the door or a mat on the floor, and choose your movement in advance so there is nothing to decide. Movement is personal, and every version counts — a walk to the letterbox, marching on the spot, stretching against the kitchen bench, or seated arm circles, shoulder rolls and ankle circles from a chair. The timer will chime softly halfway and again at the end, so you never need to watch the clock.`,
+`If it's raining or cold, then move indoors — the kitchen is a perfectly good studio. If you're sore, unwell or in pain, then do the tiny version or rest completely; rest is part of looking after yourself, not a failure of it, and anything new or uncomfortable is worth checking with your doctor. If you simply don't feel like it, then press start anyway and give yourself honest permission to stop after one minute. Starting is the hard part — once you're moving, you'll often find you want to keep going.`
+  ]},
+{ id:'h4', j:0, order:40, time:'morning',
+  title:'The 3-Minute Intention Pause', sub:'One priority and one gratitude',
+  cue:'After my movement spark, I sit down and write one priority and one thing I\'m grateful for.',
+  std:'Take three quiet minutes: write the one thing that would make today feel worthwhile, and one thing you\'re grateful for.',
+  tiny:'Say out loud your one priority and one small thing you\'re thankful for.',
+  timer:{std:180, tiny:60},
+  letter:[
+`A vague day tends to fill itself with other people's urgencies. Writing down a single priority does something surprisingly powerful: it turns a fuzzy wish into a clear intention, and the brain begins quietly noticing chances to act on it. We ask for just one — not a to-do list — because a single priority is calming while ten are overwhelming. The gratitude half balances the plan with perspective. Gratitude practices are linked in research with modest but real gains in well-being, partly because they train attention towards what is already going right instead of only what needs fixing.`,
+`Keep a small notebook and pen where you'll sit after your movement — the kitchen table or your favourite chair — left open to a fresh page. Use the same two prompts every time so there's nothing to invent: "Today feels worthwhile if I…" and "I'm grateful for…". The reflection box on this card works too, if you'd rather type. The three-minute timer isn't a target to fill; it's a container that tells your mind there is time to pause, and permission to stop when it chimes.`,
+`If your mind goes blank, then let the priority be something kind and simple, like "rest when I need to", and the gratitude something small — this cup of tea, the sound of birds, a warm cat. If you have no time to sit, then say both out loud while the kettle boils. If you find yourself writing five priorities, then circle just one and let the rest wait. And on the hardest mornings, the tiny version is a whole practice in itself: one priority, one thanks, one breath, and on you go.`
+  ]},
+{ id:'h5', j:0, order:70, time:'day',
+  title:'Afternoon Energy Reset', sub:'Midday water and a 2-minute posture & breathing reset',
+  cue:'After I finish lunch, I refill my water and do the two-minute reset.',
+  std:'Drink a glass of water, stand or sit tall, roll your shoulders, and take slow breaths with longer exhales for two minutes.',
+  tiny:'Drink a few mouthfuls of water and take three slow breaths, letting each exhale be longer than the inhale.',
+  timer:{std:120, tiny:60},
+  letter:[
+`Many people feel a natural dip in alertness in the early afternoon. Part of it is the body's daily rhythm, part is a morning of sitting still, and part is simply forgetting to drink. The usual fixes — more coffee or something sweet — tend to borrow energy from later in the day. This reset works with your body instead: water to top up what the morning used, a little movement to get the blood flowing, and slow breathing with long exhales, which encourages the calming branch of the nervous system while the movement keeps you alert. Calm and awake is exactly where good afternoons happen.`,
+`Anchor it to something that already happens every day: "After I finish lunch, I refill my water and reset." If lunch is unpredictable, set a gentle phone reminder labelled "Sanctuary reset" for the time your energy usually dips. Keep a water bottle on your desk or in your bag so the first step is always within reach. The routine itself is simple: drink, sit or stand tall, roll your shoulders back and down, then breathe in through your nose and out slowly through your mouth until the timer chimes.`,
+`If you're in a meeting or on the road when lunch ends, then do the reset at the very next pause — the bathroom, the car park, the queue. If you've no water nearby, then breathe first and drink when you can. If you only remember in the evening, then let it go; no catch-up is needed, and tomorrow's reset is enough. And on the days when the afternoon feels heavy, three long exhales with your eyes closed is a complete version of this ritual — it still counts.`
+  ]},
+
+/* ---------------- Journey 2 ---------------- */
+{ id:'h6', j:1, order:50, time:'day',
+  title:'The Distraction-Free Sanctuary', sub:'Close extra tabs and silence notifications before work',
+  cue:'Before I open my main task, I close the tabs I don\'t need, silence notifications and put my phone out of reach.',
+  std:'Before you begin focused work: close every tab and app you don\'t need, switch on Do Not Disturb or a Focus mode, and place your phone face-down out of arm\'s reach.',
+  tiny:'Silence your phone and close one tab or app you don\'t need.',
+  timer:null,
+  letter:[
+`Each notification is a small tap on the shoulder, and after every interruption the mind takes time to settle fully back into what it was doing. Some studies even suggest that a phone simply sitting in view can tug at attention, because part of us keeps half-waiting for it. The lesson from behavioural science is kind and practical: we are not very good at resisting distractions through willpower, but we are very good at designing them away. This ritual builds a small sanctuary around your attention before you need it, so focus becomes the default instead of a constant fight.`,
+`Your cue is the moment just before you open your main task. Close everything you don't need, set your phone's Focus or Do Not Disturb mode — most phones let you schedule it — and put the phone face-down somewhere you'd have to stand up to reach. Keep a "parking lot" note open for anything you want to come back to later; it is much easier to close a tab when you trust it won't be lost. At the end of the day, close yesterday's tabs so tomorrow's sanctuary starts tidy.`,
+`If you're waiting on an important call or a family member might need you, then allow just those people through — Focus modes can do this. If you feel the itch to check something, then write the urge in your parking lot and return to the work; the urge usually fades within a minute or two. If your job truly needs your inbox open, then choose a fixed time to check it rather than living in it. And on chaotic days, the tiny version — one silenced phone, one closed tab — still tells your brain that this time is protected.`
+  ]},
+{ id:'h7', j:1, order:55, time:'day',
+  title:'The 25-Minute Single-Task Sprint', sub:'One task, one timer, full attention',
+  cue:'After I set up my distraction-free sanctuary, I write down one specific task and start the 25-minute timer.',
+  std:'Choose one specific task, write it down, and give it 25 minutes of single-minded attention. When the timer chimes, take a real break.',
+  tiny:'Write down the one task you\'ll do next, then work on it for just 60 seconds.',
+  timer:{std:1500, tiny:60},
+  letter:[
+`This ritual borrows from the Pomodoro Technique, created by Francesco Cirillo: a short, fixed block of focus followed by a break. It works because procrastination is often less about laziness and more about avoiding an uncomfortable feeling — the task seems big, vague or unpleasant. A defined, finite block shrinks the task into something the brain will agree to start. Single-tasking matters too: every switch between tasks has a cost in time and accuracy, so 25 minutes on one thing usually accomplishes more than an hour of juggling.`,
+`Stack it directly onto your distraction-free setup: sanctuary first, then sprint. Before you press start, write your task on a sticky note or in the reflection box, and make it concrete — "draft the first two paragraphs" rather than "work on the report". Have water nearby so you don't need to get up, and if you share a home, a quick "I'm doing 25 minutes" lets people know. The timer gives you a soft ping at the halfway point so you know where you are without looking, and a singing-bowl chime when it's done.`,
+`If you're interrupted, then jot down where you were and restart the timer when you can — a broken sprint isn't a failure, it's just a sprint. If you don't know where to start, then make the first sprint "list the next three steps". If 25 minutes feels impossible today, then use the tiny version: write the next task and give it one honest minute; you may well keep going. And when the chime sounds, actually stop and rest — the break is part of the method, not a reward you have to earn.`
+  ]},
+{ id:'h8', j:1, order:60, time:'day',
+  title:'The Mindful Transition Pause', sub:'Five screen-free minutes between tasks',
+  cue:'When a sprint ends or I finish a task, I stand up and step away from all screens for five minutes.',
+  std:'Between tasks, take five minutes away from every screen: stand, stretch, look out of a window, refill your water or step outside.',
+  tiny:'Look out of a window or at something far away for 60 seconds, breathing slowly.',
+  timer:{std:300, tiny:60},
+  letter:[
+`Researchers have a lovely name for what happens when we rush from one task to the next: attention residue. Part of your mind stays behind, still chewing on the last thing, so you arrive at the new task only partly present. A short, deliberate pause gives that residue somewhere to settle. Stepping away from the screen also rests your eyes, which spend most of the working day focused at close range; looking at something far away lets the focusing muscles relax. Five quiet minutes can make the next hour noticeably clearer.`,
+`Your cue is built in: when the sprint timer chimes, or whenever you finish a task, you stand up. Make the pause inviting by creating a small landing spot — a chair by a window, a plant to water, a kettle, the back step. Leave your phone where it is; the point is a break from inputs, not a different input. You might stretch, refill your water, or simply watch the sky. Let the timer do the remembering, so the pause can be genuinely restful.`,
+`If you have back-to-back meetings, then close your eyes and take three slow breaths between them — thirty seconds still clears the desk. If you notice yourself scrolling during your pause, then leave your phone in another room for the next one. If five minutes feels indulgent, then remember this is maintenance, not laziness — you are protecting the quality of the work that follows. And on the busiest days, one minute at the window, breathing slowly, is a complete ritual.`
+  ]},
+{ id:'h9', j:1, order:65, time:'day',
+  title:'The Midday Brain Dump', sub:'Clear the mental clutter onto paper',
+  cue:'Before I start my afternoon, I write down everything that\'s on my mind and circle one next step.',
+  std:'For five minutes, write everything rattling around your head — tasks, worries, ideas, reminders. Then circle the one next action that matters most.',
+  tiny:'Write down three things that are on your mind right now.',
+  timer:{std:300, tiny:60},
+  letter:[
+`Unfinished tasks have a way of nagging at us, popping into our thoughts at the worst moments. Psychologists have long observed that incomplete goals stay "active" in the mind, and studies suggest that simply making a concrete plan for them can quieten those intrusive reminders. Your working memory — the mental notepad you think with — holds only a handful of things at once. When it is crowded with "don't forget", there is less room for thinking. Putting it all on paper hands the remembering to the page and gives your mind its space back.`,
+`Anchor this to the turning point of your day: "Before I start my afternoon, I do my brain dump." Keep a dedicated notebook or page just for this so everything lives in one place. Write fast and don't organise — tasks, worries, half-ideas, shopping, that email you've been avoiding. When the timer chimes, read it over and circle just one next step. Everything else is safe on the page, and you can return to it tomorrow.`,
+`If the list feels overwhelming, then cross out anything that isn't yours to carry or doesn't need doing this week — that alone is a relief. If a worry keeps returning, then write one small action beside it, even "ask for help". If you have no paper, then use a notes app, but close it as soon as you're done so it doesn't become a doorway to scrolling. And when you're depleted, the tiny version — just three things written down — still loosens the knot.`
+  ]},
+{ id:'h10', j:1, order:80, time:'day',
+  title:'Celebrating Tiny Wins', sub:'An end-of-workday acknowledgement ritual',
+  cue:'When I finish work for the day, I name three things I did — and give myself a small moment of celebration.',
+  std:'At the end of your working day, write or say three things you did today, however small, and mark them with a little celebration — a smile, a "yes!", a fist pump.',
+  tiny:'Name one thing you did today and say "well done" to yourself.',
+  timer:null,
+  letter:[
+`Our brains lean towards noticing what went wrong; it's an old survival bias. At the end of a workday that usually means remembering the unfinished tasks and forgetting everything we actually did. Research on motivation suggests that a sense of progress, even small progress, is one of the strongest everyday fuels we have. And habit researchers such as BJ Fogg point to the role of positive emotion: a moment of genuine celebration helps a behaviour feel rewarding, which helps it stick. This ritual deliberately closes the day by noticing what went right.`,
+`Your cue is the end of work — closing the laptop, packing up the tools, or finishing your last focused task if your hours are irregular. Keep a "done list" next to your to-do list, or use the reflection box here. Write three things you did, however small: "answered the hard email", "took my breaks", "finished the brain dump". Then celebrate in whatever way feels natural to you — a smile, a quiet "yes!", a little drum roll on the desk. It may feel silly at first; that's fine. The feeling is the point.`,
+`If the day felt like a failure, then let your wins be honest and small — "I showed up", "I asked for help", "I rested when I needed to". If you work from home and the day never seems to end, then let this ritual be the thing that ends it. If you forgot, then do it while the kettle boils in the evening. And if you can only manage one, then one win, named kindly, is a complete ritual.`
+  ]},
+
+/* ---------------- Journey 3 ---------------- */
+{ id:'h11', j:2, order:75, time:'day',
+  title:'The Caffeine & Heavy Meal Curfew', sub:'Protecting tonight\'s sleep from this afternoon',
+  cue:'When I make my after-lunch drink, I choose something caffeine-free — and I plan dinner to finish a few hours before bed.',
+  std:'Have your last caffeine about eight hours before bed (around 2 pm for a 10 pm bedtime), and finish your last large meal two to three hours before sleep.',
+  tiny:'Choose one caffeine-free drink this afternoon instead of a caffeinated one.',
+  timer:null,
+  letter:[
+`Through the day, a chemical called adenosine slowly builds up in the brain and creates "sleep pressure" — the drowsiness that helps you fall asleep at night. Caffeine works by blocking adenosine's signal, which is why it feels so helpful in the morning. The catch is how long it lingers: on average it takes around five hours for the body to clear half of it, and much longer for some people. An afternoon coffee can still be quietly at work at bedtime, and research has found that caffeine even six hours before bed can reduce sleep. Large, rich meals late at night can add discomfort and reflux just as you're trying to settle.`,
+`Choose your curfew time once, so there's nothing to decide each day: roughly eight hours before bed for caffeine, and two to three hours for your last big meal. Then make the swap easy. Keep a caffeine-free option you genuinely enjoy at the front of the cupboard — herbal or rooibos tea, decaf, sparkling water with fruit. Remember the hidden sources too: tea, cola, energy drinks, chocolate and some pain relievers contain caffeine. Your cue is the after-lunch drink: that's the moment the curfew begins.`,
+`If you need a lift after curfew, then reach for your Afternoon Energy Reset instead — water, movement and breath. If social plans mean a late dinner, then keep the portion lighter and make lunch the bigger meal. If you work shifts, then count back from your actual sleep time rather than the clock on the wall. And if you have medical guidance about meals or blood sugar, follow that first — this curfew should support your care, never compete with it.`
+  ]},
+{ id:'h12', j:2, order:90, time:'evening',
+  title:'The Digital Sunset', sub:'Phone charging outside the bedroom, 45 minutes before bed',
+  cue:'When my "Digital sunset" alarm sounds, I plug my phone in outside the bedroom or switch it to airplane mode.',
+  std:'Forty-five minutes before bed, put your phone on charge outside the bedroom (or on airplane mode across the room) and let the evening wind down without screens.',
+  tiny:'Put your phone on charge across the room at least ten minutes before you go to sleep.',
+  timer:null,
+  letter:[
+`Our phones are designed by very clever people to be hard to put down, and evenings are when that design wins most often — one more video, one more scroll, and suddenly it's midnight. Bright screens late at night can also nudge back the body's release of melatonin, the hormone that signals it's time to sleep, though for many people the bigger effect is simply how stimulating and endless the content is. A digital sunset doesn't rely on resisting the phone. It takes the phone out of the room, so there's nothing to resist.`,
+`Set a recurring alarm called "Digital sunset" for 45 minutes before your usual bedtime. When it sounds, plug your phone into a charger in the kitchen or hallway — make that its permanent overnight home. If you use your phone as an alarm clock, an inexpensive bedside clock is one of the best investments you'll make for sleep. Most phones also have a Sleep or Bedtime focus that silences everything except the people you choose. Put a book, a puzzle or your gratitude notebook where your phone used to sit, so your hands have somewhere to go.`,
+`If you need your phone for an alarm, then switch on airplane mode and place it face-down across the room. If family might need you overnight, then use a focus mode that lets only their calls through. If you find yourself reaching for it out of habit, then notice the reach kindly and pick up the book instead. If your evening runs late, then a shorter sunset still counts — ten phone-free minutes before sleep is the tiny version, and it is a real gift to your night.`
+  ]},
+{ id:'h13', j:2, order:92, time:'evening',
+  title:'Environment Priming', sub:'Set up tomorrow\'s water, clothes and workspace',
+  cue:'After my digital sunset, I spend five minutes setting out tomorrow: water glass, clothes and a clear workspace.',
+  std:'Spend five minutes preparing tomorrow: fill the bedside water glass, lay out your clothes, clear your workspace and set out your breakfast bowl.',
+  tiny:'Fill tomorrow\'s water glass and place it beside your bed.',
+  timer:null,
+  letter:[
+`Morning-you inherits whatever evening-you leaves behind. Behavioural scientists call the way our surroundings shape our choices "choice architecture", and it is one of the most reliable tools we have: when the helpful option is already in place, we tend to take it, and when it's hidden or fiddly, we tend not to. Preparing the night before turns tomorrow's good habits into defaults. It also does something for tonight — tidying the loose ends of the day tells your mind that nothing urgent is waiting, which makes it easier to let go and rest.`,
+`Stack this directly after your digital sunset: phone on the charger, then a five-minute reset. Fill the water glass and put it by the bed — this is where your very first ritual began. Lay out tomorrow's clothes, put your shoes by the door, clear your desk down to just tomorrow's first task, and set out your breakfast bowl. The trick is placement: put things exactly where morning-you will bump into them, so the next right step is literally in your path.`,
+`If you're too tired for the whole reset, then do just the water glass — it's the anchor everything else hangs on. If you share your home, then agree on a small "launch pad" spot that's yours, so your setup doesn't get tidied away. If tomorrow is unpredictable, then prepare only what you know for sure. And if you forget completely, then don't worry; tomorrow-you is resourceful, and tonight is another chance.`
+  ]},
+{ id:'h14', j:2, order:98, time:'evening', breath:true,
+  title:'The 4-7-8 Calming Breath', sub:'A guided breath to settle the nervous system',
+  cue:'Once I\'m in bed with the lights out, I do four rounds of 4-7-8 breathing.',
+  std:'Four rounds: breathe in quietly through your nose for 4, hold for 7, breathe out through your mouth for 8. Follow the circle.',
+  tiny:'Three rounds of 4-7-8 breathing — under a minute.',
+  timer:{std:76, tiny:57},
+  letter:[
+`The 4-7-8 breath was popularised by Dr Andrew Weil and draws on old breathing traditions. Its key feature is an exhale that's twice as long as the inhale. Slow breathing with long exhales is associated with greater activity in the parasympathetic nervous system — the "rest and digest" branch that slows the heart and softens muscle tension. Your heart rate naturally eases a little each time you breathe out, so lengthening the out-breath leans into that calming rhythm. Counting helps too: it gives a busy mind one simple thing to hold, which leaves less room for the day's replay.`,
+`Your cue is lying down with the lights out. Rest the tip of your tongue just behind your upper front teeth. Breathe out fully through your mouth, then breathe in quietly through your nose while the circle grows for four counts, hold gently for seven, and breathe out through your mouth for eight as it shrinks. Four rounds is plenty to begin with. Use the guided timer for your first few nights, and soon you'll carry the rhythm by heart, ready for any moment you need it.`,
+`If you feel light-headed, then stop and breathe normally — that is common at first, and you can shorten the counts while keeping the same proportion, such as 2-3.5-4. If holding your breath is uncomfortable because of a heart, lung or other health condition, then skip the hold and simply make each exhale longer than each inhale, and check with your doctor if you're unsure. If your mind races anyway, then count more slowly. And if you fall asleep halfway through, the ritual has done its job perfectly.`
+  ]},
+{ id:'h15', j:2, order:95, time:'evening',
+  title:'Three Good Things Reflection', sub:'Evening gratitude before sleep',
+  cue:'Just before lights out, I write three good things from today and why each one happened.',
+  std:'Before sleep, write down three good things from today — big or small — and a few words on why each happened.',
+  tiny:'Name one good thing from today and why it happened.',
+  timer:null,
+  letter:[
+`This practice comes from positive psychology research led by Martin Seligman and colleagues. In one well-known study, people who wrote down three good things each evening, along with why they happened, reported more happiness and fewer depressive symptoms over the following months. The "why" is the clever part. Explaining a good moment trains your attention to notice causes — including your own kindness, effort and choices — rather than seeing good things as random luck. Done at bedtime, it also sends you to sleep with something other than the day's worries on your mind.`,
+`Slot this in just before your 4-7-8 breath: sitting up in bed, notebook in hand, then lights out and breathe. Keep the notebook and a pen permanently on your bedside table — where your phone used to live. Your three things can be tiny: a good cup of tea, a friendly word at the shops, finishing a task, a cat curling up on the bed. Beside each, write a few words on why it happened: "because I made time for it", "because she's thoughtful", "because I asked".`,
+`If the day was genuinely hard, then let the good things be very small — a warm shower, a comfortable bed, a moment of quiet. Hard days are when this practice matters most. If you're too tired to write, then think your three things through slowly during your breathing instead. If you notice the same things appearing often, then that's wonderful information about what nourishes you. And on the days when only one comes to mind, one good thing and its reason is a complete ritual.`
+  ]},
+
+/* ---------------- Journey 4 ---------------- */
+{ id:'h16', j:3, order:25, time:'morning',
+  title:'Morning Sunlight Exposure', sub:'Five to ten minutes of natural outdoor light',
+  cue:'After my morning water, I take my breakfast or first drink outside, or sit by an open door, for ten minutes.',
+  std:'Spend five to ten minutes outdoors in natural morning light — on the porch, in the garden or on a short stroll. Never look directly at the sun.',
+  tiny:'Open a door or window and stand in the daylight for 60 seconds.',
+  timer:{std:600, tiny:60},
+  letter:[
+`Light is the strongest signal your body's internal clock receives. Morning daylight — even on a cloudy day, many times brighter than ordinary indoor lighting — helps set that clock for the day ahead, which can support alertness in the daytime and, later, a natural readiness for sleep. In this way, this ritual quietly supports everything you built in the sleep journey. Time outdoors is also linked with better mood, and there's something grounding about simply noticing the weather, the birds and the sky before the day gets busy.`,
+`Stack it onto the very first habit you ever built: "After my morning water, I take my breakfast or tea outside." Make the outdoors inviting by keeping a chair, a jacket and your shoes near the door. You don't need to stare at anything — just be outside with your eyes open and relaxed, looking around naturally, and never look directly at the sun. Where the sun is strong, early morning is usually the gentlest time to be out, and sun protection still matters if you stay longer.`,
+`If it's raining, then stand under cover or at an open door — outdoor light still beats indoor light. If getting outside is difficult for you today, then a seat by a bright, open window is a fine version of this ritual. If you wake after the morning has gone, then any daylight still helps, so step out whenever you can. And if the day runs away from you, then the tiny version — one minute in the doorway, breathing the fresh air — still counts.`
+  ]},
+{ id:'h17', j:3, order:35, time:'morning',
+  title:'The Self-Compassion Check-In', sub:'Swapping self-criticism for supportive coaching',
+  cue:'After my movement spark, I place a hand on my heart and ask, "How am I, really?" — then answer the way a good friend would.',
+  std:'For three minutes: hand on heart, notice how you honestly feel, then speak to yourself as a kind coach would — "This is hard. Others feel this too. What do I need right now?"',
+  tiny:'Place a hand on your heart and say one kind sentence to yourself.',
+  timer:{std:180, tiny:60},
+  letter:[
+`Psychologist Kristin Neff describes self-compassion as three things: noticing what you feel without pushing it away, remembering that struggle is part of being human, and offering yourself the kindness you'd give a friend. Her research and others' link self-compassion with greater resilience. Importantly, it doesn't make people lazy — studies suggest that people who treat themselves kindly after a setback are often more motivated to learn and try again, not less. Harsh self-criticism tends to trigger a sense of threat, and threatened minds hide and freeze. A supportive inner coach helps you move.`,
+`Stack it after your movement spark, while your body is warm and awake. Sit comfortably, rest one hand on your heart, and ask quietly, "How am I, really?" Name what's there — tired, worried, hopeful, flat. Then say three simple sentences: "This is hard right now. Other people feel this too. May I be kind to myself today." Finish by asking what you need, and write one coaching sentence in the reflection box, the way a good friend or trainer would speak to you.`,
+`If it feels awkward or false, then that's completely normal at first — try speaking the way you would to a good mate or someone you love. If you catch harsh self-talk later in the day, then pause and rephrase it as a coach: not "I'm hopeless", but "That was hard; what's one thing I can try next?". If this practice stirs up big or painful feelings, then reach out to someone you trust or a health professional; you deserve support, not just a ritual. And on the busiest mornings, one hand on your heart and one kind sentence is enough.`
+  ]},
+{ id:'h18', j:3, order:72, time:'day',
+  title:'Intentional Connection', sub:'One genuine message of appreciation',
+  cue:'During my afternoon reset, I send one genuine message of appreciation to someone I care about.',
+  std:'Send one sincere message to a loved one or friend: thank them for something specific, or tell them what you appreciate about them.',
+  tiny:'Send a one-line "thinking of you" message to someone you care about.',
+  timer:null,
+  letter:[
+`Across decades of research, warm relationships stand out as one of the strongest predictors of both happiness and health. Yet many of us hold back from reaching out, often because we underestimate how much it would mean. Studies by researchers including Nicholas Epley have found that people consistently underestimate how pleased others are to receive a note of thanks or appreciation, and overestimate how awkward it will feel. This ritual gently corrects that error, one message at a time — and it tends to lift the sender as much as the receiver.`,
+`Stack it onto your Afternoon Energy Reset: water, breath, then one message. Keep a short list of people in your notes — family, old friends, neighbours, someone who helped you once — and simply work your way down it. Be specific; specific appreciation lands far more warmly than general niceness. "I was thinking about the time you drove me to that appointment — I've never forgotten it" means more than "hope you're well". A text, a voice message, an email or a card all count.`,
+`If you don't know what to say, then "Thought of you today and it made me smile" is plenty. If your social energy is low, then send a short text or a photo of something that reminded you of them. If you're unsure whether a message will be welcome, then choose someone with whom things are simple and warm. And if no one replies, the ritual still worked — the point was to give, and you gave.`
+  ]},
+{ id:'h19', j:3, order:85, time:'evening',
+  title:'Creative Play / Analog Hour', sub:'Fifteen minutes of screen-free hobby, reading or music',
+  cue:'After dinner, before my digital sunset, I pick up my hobby, book or instrument for fifteen minutes.',
+  std:'Give fifteen minutes to something screen-free and absorbing — reading, music, drawing, crafts, gardening, cooking, puzzles or building something.',
+  tiny:'One page, one song, one sketch or one small piece of a puzzle.',
+  timer:{std:900, tiny:60},
+  letter:[
+`Play is not a luxury for adults; it's restoration. Absorbing, hands-on activities can lead to what psychologist Mihaly Csikszentmihalyi called "flow" — that lovely state in which time seems to disappear because you're fully engaged. Research on recovery from work suggests that activities which let you switch off from duties and feel yourself getting better at something are especially refreshing. Screens offer entertainment designed to be consumed; analog play invites you to create, notice and make. It's the difference between being filled up and being emptied out.`,
+`Stack it after dinner, before your digital sunset, so your evening has something to look forward to besides the screen. Lower the friction: leave the guitar on its stand instead of in its case, the book on your chair, the puzzle on the table, the sketchbook and pencils in plain view. The fifteen-minute timer is there to give you permission, not pressure — when it chimes, you can stop or happily keep going. What matters is choosing something that feels like yours.`,
+`If you're exhausted, then do the tiny version — one page, one song, one sketch. If you don't have a hobby, then treat this as exploring: a library book, colouring, a new recipe, gardening, a model kit, learning a few chords. If you feel guilty about "unproductive" time, then remember this is how you recover enough to be productive at all. And if the evening disappears, then a few minutes with a book in bed counts beautifully.`
+  ]},
+{ id:'h20', j:3, order:100, time:'weekly',
+  title:'Weekly Sanctuary Self-Audit', sub:'Reviewing which rituals genuinely serve you',
+  cue:'Each week at a set time (for example Sunday after breakfast), I review my rituals. While I\'m learning this habit, I do a short version daily.',
+  std:'For ten minutes, review your week: Which ritual helped most? Which felt like a chore? What one small change would make next week kinder? Read back over your reflections.',
+  tiny:'Answer one question: "What helped me most this week?"',
+  timer:{std:600, tiny:60},
+  letter:[
+`Habits are meant to serve you, not the other way round. Without reflection, routines can harden into obligations long after they've stopped helping. A regular review turns experience into learning — the same simple loop of plan, do and review that good coaches and teams rely on. It also protects your sense of choice. Research on motivation, especially self-determination theory, suggests that habits we feel we have chosen are far more sustainable than habits we feel pushed into. This audit is where you keep choosing.`,
+`Choose a regular weekly slot and make it pleasant — Sunday morning with a cup of tea, perhaps, or a quiet Saturday afternoon. While you're establishing this ritual over the next few days, do a short daily version so it takes root. Ask three questions: Which ritual gave me the most? Which felt like a chore? What one small change would make next week kinder? Scroll back through your reflection notes for clues; patterns often appear that you'd never have noticed day to day. Then decide on just one tweak.`,
+`If a ritual isn't serving you, then shrink it, move it to a better time, or retire it — retiring a habit thoughtfully is a success of self-knowledge, not a failure. If you miss your audit day, then do it the next day without any make-up penalty. If everything feels like a chore, then switch the whole of next week to tiny versions and simply notice what you miss. And on the fullest weeks, one honest question — "What helped me most?" — is a complete review.`
+  ]}
+];
+HABITS.forEach(function(h,i){ h.idx=i; h.req=JOURNEYS[h.j].req; });
+const TOTAL_DAYS = HABITS.reduce(function(s,h){ return s+h.req; },0); // 90
+function byId(id){ for(var i=0;i<HABITS.length;i++){ if(HABITS[i].id===id) return HABITS[i]; } return null; }
+
+/* ---------- 2. Safe storage ---------- */
+const KEY = 'sanctuaryRituals.v2';
+let storageOK = true, storageWarned = false;
+const store = {
+  get: function(k){ try { return window.localStorage.getItem(k); } catch(e){ storageOK=false; return null; } },
+  set: function(k,v){ try { window.localStorage.setItem(k,v); return true; } catch(e){ storageOK=false; return false; } },
+  remove: function(k){ try { window.localStorage.removeItem(k); return true; } catch(e){ return false; } }
+};
+
+/* ---------- 3. Dates ---------- */
+function pad(n){ return n<10 ? '0'+n : ''+n; }
+function keyOf(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function todayKey(){ return keyOf(new Date()); }
+function keyToDate(k){ var p=k.split('-').map(Number); return new Date(p[0],p[1]-1,p[2]); }
+function dayDiff(a,b){ return Math.round((keyToDate(b)-keyToDate(a))/86400000); }
+function prettyKey(k){ try { return keyToDate(k).toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'}); } catch(e){ return k; } }
+
+/* ---------- 4. State ---------- */
+function defaultState(){
+  return {
+    v:2, name:'', onboarded:false, created: todayKey(),
+    stage:0,            // index of the current focus habit (20 = program complete)
+    stageDays:0,        // practice days counted on the current focus habit
+    creditDate:null,    // date the focus habit was last credited (one credit per day)
+    advancedOn:null,    // date the most recent habit was established (for same-day undo)
+    done:{},            // { 'YYYY-MM-DD': { h1:'std'|'tiny' } }
+    notes:{},           // { 'YYYY-MM-DD': { h1:'text' } }
+    tiny:{ date:'', ids:{} },
+    rough:{ date:'', on:false },
+    lastOpen:'',        // new Date().toDateString() — drives the midnight reset
+    welcomeSeen:'',
+    preview:false, sound:true
+  };
+}
+function isObj(o){ return o && typeof o==='object' && !Array.isArray(o); }
+function migrate(s){
+  var d = defaultState();
+  if(!isObj(s)) return d;
+  var out = Object.assign(d, s);
+  if(!isObj(out.done)) out.done = {};
+  if(!isObj(out.notes)) out.notes = {};
+  if(!isObj(out.tiny) || !isObj(out.tiny.ids)) out.tiny = { date:'', ids:{} };
+  if(!isObj(out.rough)) out.rough = { date:'', on:false };
+  out.stage = Math.max(0, Math.min(HABITS.length, parseInt(out.stage,10) || 0));
+  out.stageDays = Math.max(0, parseInt(out.stageDays,10) || 0);
+  if(out.stage < HABITS.length) out.stageDays = Math.min(out.stageDays, HABITS[out.stage].req - 1);
+  else out.stageDays = 0;
+  out.name = typeof out.name==='string' ? out.name.slice(0,40) : '';
+  out.preview = !!out.preview; out.sound = out.sound !== false;
+  return out;
+}
+function load(){
+  var raw = store.get(KEY);
+  if(!raw) return defaultState();
+  try { return migrate(JSON.parse(raw)); } catch(e){ return defaultState(); }
+}
+let state = load();
+function save(){
+  var ok = store.set(KEY, JSON.stringify(state));
+  if(!ok && !storageWarned){
+    storageWarned = true;
+    toast('This browser isn\'t allowing the app to save (private browsing?). Use Export regularly so nothing is lost.', 6000);
+  }
+}
+
+/* ---------- 5. Derived helpers ---------- */
+function isRough(){ return state.rough.date===todayKey() && state.rough.on; }
+function isTiny(h){ return isRough() || (state.tiny.date===todayKey() && !!state.tiny.ids[h.id]); }
+function doneToday(id){ var d=state.done[todayKey()]; return d ? d[id] : undefined; }
+function statusOf(i){ return i < state.stage ? 'est' : (i === state.stage ? 'focus' : 'locked'); }
+function practiceCount(){
+  var n=0, lim=Math.min(state.stage, HABITS.length);
+  for(var i=0;i<lim;i++) n += HABITS[i].req;
+  if(state.stage < HABITS.length) n += state.stageDays;
+  return Math.min(n, TOTAL_DAYS);
+}
+function currentJourney(){ return state.stage >= HABITS.length ? 3 : HABITS[state.stage].j; }
+function journeyFirst(j){ for(var i=0;i<HABITS.length;i++){ if(HABITS[i].j===j) return i; } return 0; }
+function journeyUnlocked(j){ return state.preview || state.stage >= journeyFirst(j); }
+function activeDates(){ return Object.keys(state.done).filter(function(k){ return state.done[k] && Object.keys(state.done[k]).length; }).sort(); }
+function lastActiveBefore(k){ var a=activeDates().filter(function(x){ return x<k; }); return a.length ? a[a.length-1] : null; }
+function noteOf(id){ var n=state.notes[todayKey()]; return n && n[id] ? n[id] : ''; }
+
+/* ---------- 6. Midnight reset (keeps all multi-day progress) ---------- */
+function checkDay(){
+  var t = new Date().toDateString();
+  if(t !== state.lastOpen){
+    state.lastOpen = t;
+    var k = todayKey();
+    state.tiny = { date:k, ids:{} };          // per-habit tiny choices are for one day only
+    state.rough = { date:k, on:false };       // rough-day switch resets each morning
+    save();
+    return true;
+  }
+  return false;
+}
+
+/* ---------- 7. Audio: soft ping + singing bowl (Web Audio, no files) ---------- */
+let actx = null;
+function audio(){
+  try {
+    if(!actx){ var AC = window.AudioContext || window.webkitAudioContext; if(!AC) return null; actx = new AC(); }
+    if(actx.state === 'suspended') actx.resume();
+    return actx;
+  } catch(e){ return null; }
+}
+function unlockAudio(){
+  var c = audio(); if(!c) return;
+  try { var b=c.createBuffer(1,1,22050), s=c.createBufferSource(); s.buffer=b; s.connect(c.destination); s.start(0); } catch(e){}
+}
+function tone(c, freq, start, peak, decay, dest){
+  var o=c.createOscillator(), g=c.createGain();
+  o.type='sine'; o.frequency.setValueAtTime(freq, start);
+  g.gain.setValueAtTime(0.0001, start);
+  g.gain.exponentialRampToValueAtTime(peak, start+0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001, start+decay);
+  o.connect(g); g.connect(dest); o.start(start); o.stop(start+decay+0.05);
+}
+function playPing(){
+  if(!state.sound) return; var c=audio(); if(!c) return;
+  try {
+    var t=c.currentTime+0.02, out=c.createGain(); out.gain.value=0.9; out.connect(c.destination);
+    tone(c, 1318.5, t, 0.12, 1.4, out);
+    tone(c, 2637, t, 0.03, 0.7, out);
+  } catch(e){}
+}
+function playBowl(){
+  if(!state.sound) return; var c=audio(); if(!c) return;
+  try {
+    var t=c.currentTime+0.03, out=c.createGain(); out.gain.value=0.85; out.connect(c.destination);
+    var f0=196; // a warm G
+    var partials=[[1,0.32,8],[2.76,0.16,6],[5.40,0.07,4],[8.93,0.03,2.6]];
+    partials.forEach(function(p){
+      tone(c, f0*p[0], t, p[1], p[2], out);
+      tone(c, f0*p[0]+0.7, t, p[1]*0.6, p[2]*0.95, out); // slight detune for the bowl's shimmer
+    });
+    // a gentle second strike
+    var t2=t+2.6;
+    tone(c, f0, t2, 0.16, 7, out); tone(c, f0*2.76, t2, 0.07, 5, out);
+  } catch(e){}
+}
+
+/* ---------- 8. Timers (with halfway ping and wake lock) ---------- */
+let T = null;   // { id, total, endAt, remaining, running, half, finished, phase }
+let wakeLock = null;
+function keepAwake(){ try { if('wakeLock' in navigator){ navigator.wakeLock.request('screen').then(function(w){ wakeLock=w; }).catch(function(){}); } } catch(e){} }
+function letSleep(){ try { if(wakeLock){ wakeLock.release(); wakeLock=null; } } catch(e){} }
+function timerTotal(h){ return h.timer ? (isTiny(h) ? h.timer.tiny : h.timer.std) : 0; }
+function fmt(sec){ sec=Math.max(0,Math.ceil(sec)); return pad(Math.floor(sec/60))+':'+pad(sec%60); }
+
+function timerStart(id){
+  var h=byId(id); if(!h||!h.timer) return;
+  unlockAudio();
+  if(T && T.id===id){
+    if(T.running){ // pause
+      T.remaining = Math.max(0,(T.endAt-Date.now())/1000); T.running=false; letSleep(); updateTimerUI(); return;
     }
-
-    function draw() {
-      const tiny = document.getElementById("tinyMode").checked;
-      let active = HABITS[0];
-      for (let i = HABITS.length - 1; i >= 0; i--) { if (unlocked(i)) { active = HABITS[i]; break; } }
-      document.getElementById("letterBox").innerHTML = "<h2>" + active.lt + "</h2><p>" + active.lb + "</p>";
-
-      let html = "";
-      HABITS.forEach((h, i) => {
-        const open = unlocked(i);
-        const cnt = data.c[h.id] || 0;
-        const done = !!data.d[h.id];
-        let dots = "";
-        for (let k = 1; k <= 4; k++) dots += '<span class="dot ' + (cnt >= k ? "on" : "") + '"></span>';
-
-        html += '<div class="card ' + (open ? "" : "locked") + '">';
-        html += '<div class="title">' + h.t + (open ? "" : " 🔒") + '</div>';
-        html += '<div class="trig">' + h.r + '</div>';
-        if (open) {
-          html += '<div>' + (tiny ? h.y : h.s) + '</div>';
-          html += '<div class="dots">' + dots + ' ' + cnt + '/4 days</div>';
-          html += '<button class="btn-go" onclick="complete(\'' + h.id + '\')" ' + (done ? "disabled" : "") + '>' + (done ? "Completed Today ✓" : "Complete Ritual") + '</button>';
-          if (h.tm > 0) html += '<button class="btn-tm" onclick="runTimer(\'' + h.id + '\',' + h.tm + ')">Start Timer</button><span class="tm-txt" id="tm-' + h.id + '"></span>';
-        } else {
-          html += '<div>Complete previous ritual 4 times to unlock.</div>';
-        }
-        html += '</div>';
-      });
-      document.getElementById("cardsBox").innerHTML = html;
+    if(T.finished){ T=null; }
+    else { T.endAt = Date.now()+T.remaining*1000; T.running=true; keepAwake(); updateTimerUI(); return; }
+  }
+  if(T && T.id!==id){ var old=T.id; T=null; resetTimerUI(old); }
+  var total=timerTotal(h);
+  T = { id:id, total:total, endAt:Date.now()+total*1000, remaining:total, running:true, half:false, finished:false, phase:'' };
+  keepAwake(); updateTimerUI();
+}
+function timerReset(id){ if(T && T.id===id){ T=null; letSleep(); } resetTimerUI(id); }
+function tick(){
+  if(!T || !T.running) return;
+  var rem = (T.endAt - Date.now())/1000;
+  T.remaining = Math.max(0, rem);
+  var h = byId(T.id);
+  if(rem <= 0){
+    T.running=false; T.finished=true; T.half=true; letSleep();
+    playBowl();
+    try { if(navigator.vibrate) navigator.vibrate([120,80,120]); } catch(e){}
+    toast(h && h.breath ? 'Beautifully done. Let your breath return to its own rhythm.' : 'Time\'s up — beautifully done. Tap "I did it" when you\'re ready.');
+  } else if(!T.half && !(h && h.breath) && rem <= T.total/2){
+    T.half=true; playPing();
+  }
+  updateTimerUI();
+}
+function breathPhase(elapsed){
+  var t = elapsed % 19;
+  if(t < 4) return { name:'in', label:'Breathe in through your nose… '+(Math.floor(t)+1), dur:4 };
+  if(t < 11) return { name:'hold', label:'Hold gently… '+(Math.floor(t-4)+1), dur:7 };
+  return { name:'out', label:'Breathe out through your mouth… '+(Math.floor(t-11)+1), dur:8 };
+}
+function updateTimerUI(){
+  if(!T) return;
+  var d=document.getElementById('td-'+T.id), b=document.getElementById('tb-'+T.id);
+  if(!d) return;
+  d.textContent = fmt(T.remaining);
+  if(b) b.textContent = T.running ? 'Pause' : (T.finished ? 'Again' : (T.remaining < T.total ? 'Resume' : 'Start'));
+  var h=byId(T.id);
+  if(h && h.breath){
+    var p=document.getElementById('tp-'+T.id), c=document.getElementById('bc-'+T.id);
+    if(T.running){
+      var ph=breathPhase(T.total - T.remaining);
+      if(p) p.textContent = ph.label;
+      if(c && T.phase!==ph.name){
+        T.phase=ph.name;
+        c.style.transition='transform '+ph.dur+'s ease-in-out';
+        c.style.transform = ph.name==='out' ? 'scale(.55)' : 'scale(1)';
+      }
+    } else {
+      if(p) p.textContent = T.finished ? 'Complete. Breathe normally.' : 'Paused';
+      if(c && T.finished){ c.style.transition='transform 2s ease'; c.style.transform='scale(.55)'; T.phase=''; }
     }
+  }
+}
+function resetTimerUI(id){
+  var h=byId(id); if(!h) return;
+  var d=document.getElementById('td-'+id), b=document.getElementById('tb-'+id), p=document.getElementById('tp-'+id), c=document.getElementById('bc-'+id);
+  if(d) d.textContent=fmt(timerTotal(h));
+  if(b) b.textContent='Start';
+  if(p) p.textContent = h.breath ? 'Tap start and follow the circle' : '';
+  if(c){ c.style.transition='transform .6s ease'; c.style.transform='scale(.55)'; }
+}
 
-    document.getElementById("tinyMode").addEventListener("change", draw);
-    setInterval(checkMidnight, 60000);
-    checkMidnight();
-    draw();
-  </script>
+/* ---------- 9. Completing habits & automatic progression ---------- */
+function complete(id){
+  var h=byId(id); if(!h) return;
+  var k=todayKey(), mode=isTiny(h)?'tiny':'std';
+  if(!state.done[k]) state.done[k]={};
+  state.done[k][id]=mode;
+  state.welcomeSeen=k;
+  var advanced=false;
+  if(h.idx===state.stage && state.stage<HABITS.length && state.creditDate!==k){
+    state.creditDate=k; state.stageDays++;
+    if(state.stageDays >= h.req){ state.stage++; state.stageDays=0; state.advancedOn=k; advanced=true; }
+  }
+  if(T && T.id===id && !T.running){ T=null; }
+  save(); render();
+  if(advanced) celebrate(h);
+  else toast(mode==='tiny' ? 'Tiny version done — that counts as a full day. 🌿' : 'Completed today ✓ Lovely work.');
+}
+function undo(id){
+  var k=todayKey(), h=byId(id); if(!h) return;
+  if(state.done[k]){ delete state.done[k][id]; if(!Object.keys(state.done[k]).length) delete state.done[k]; }
+  if(state.creditDate===k){
+    if(state.advancedOn===k && h.idx===state.stage-1){
+      state.stage--; state.stageDays=h.req-1; state.advancedOn=null; state.creditDate=null;
+    } else if(state.advancedOn!==k && h.idx===state.stage){
+      state.stageDays=Math.max(0,state.stageDays-1); state.creditDate=null;
+    }
+  }
+  save(); render(); toast('Undone. No harm done.');
+}
+
+/* ---------- 10. Rendering ---------- */
+const $ = function(s){ return document.querySelector(s); };
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+let tab = 'today';
+
+function greeting(){
+  var h=new Date().getHours(), g = h<5 ? 'Peaceful night' : h<12 ? 'Good morning' : h<17 ? 'Good afternoon' : 'Good evening';
+  return g + (state.name ? ', '+state.name : '');
+}
+function renderHeader(){
+  $('#hello').textContent = greeting();
+  var n=practiceCount();
+  $('#meterFill').style.width = (n/TOTAL_DAYS*100).toFixed(1)+'%';
+  var j=JOURNEYS[currentJourney()];
+  $('#dayline').innerHTML = state.stage>=HABITS.length
+    ? '<b>All 90 practice days complete</b> · every ritual is yours to keep'
+    : '<b>'+n+' of '+TOTAL_DAYS+'</b> practice days · Journey '+(currentJourney()+1)+': '+esc(j.title);
+  var r=isRough(), rb=$('#roughBtn');
+  rb.setAttribute('aria-pressed', r ? 'true' : 'false');
+  rb.textContent = r ? '☾ Rough day is on — every ritual is tiny today and still counts fully. Tap to switch off.' : '☾ Rough day? Tap to make every ritual tiny for today.';
+  var t='<button class="tab'+(tab==='today'?' on':'')+'" data-act="tab" data-tab="today">Today</button>';
+  JOURNEYS.forEach(function(J,i){
+    var un=journeyUnlocked(i);
+    t+='<button class="tab'+(tab===String(i)?' on':'')+(un?'':' locked')+'" data-act="tab" data-tab="'+i+'">'+(un?J.icon:'🔒')+' '+(i+1)+' · '+esc(J.short)+'</button>';
+  });
+  $('#tabs').innerHTML=t;
+}
+function render(){
+  renderHeader();
+  var m=$('#main');
+  m.innerHTML = tab==='today' ? viewToday() : viewJourney(parseInt(tab,10));
+  if(T){ if(document.getElementById('td-'+T.id)){ T.phase=''; updateTimerUI(); } }
+}
+
+function welcomeBanner(){
+  var k=todayKey();
+  if(state.welcomeSeen===k || (state.done[k] && Object.keys(state.done[k]).length)) return '';
+  var la=lastActiveBefore(k); if(!la) return '';
+  var gap=dayDiff(la,k); if(gap<2) return '';
+  var nm = state.name ? ', '+esc(state.name) : '';
+  var h = state.stage<HABITS.length ? HABITS[state.stage] : null;
+  var where = h ? (state.stageDays ? 'You\'re still on <b>'+esc(h.title)+'</b>, with '+state.stageDays+' of '+h.req+' practice days already in the bank.' : 'Your next ritual, <b>'+esc(h.title)+'</b>, is right here waiting for you, along with every ritual you\'ve already built.') : 'Every ritual you built is still yours.';
+  var msg = gap===2
+    ? '<h3>Welcome back'+nm+' 🌿</h3><p>Yesterday slipped by — that\'s simply being human. Nothing has been reset. '+where+'</p><p>The only gentle rule here is <b>never miss twice</b>, and today one tiny version honours it completely. Tiny counts as a full day.</p>'
+    : '<h3>Welcome back'+nm+' 🌿</h3><p>It\'s been '+(gap-1)+' days, and that\'s okay — life happens. Nothing has been lost. '+where+'</p><p>Let today be easy: one tiny version counts as a full day.</p>';
+  return '<div class="banner">'+msg+'<div class="row"><button class="pill-btn" data-act="welcome-tiny">Make today tiny</button><button class="pill-btn sec" data-act="welcome-ok">I\'m ready</button></div></div>';
+}
+function ringSVG(done,total){
+  var pct = total ? done/total : 0, r=22, c=2*Math.PI*r;
+  return '<svg class="ring" viewBox="0 0 54 54" aria-hidden="true"><circle cx="27" cy="27" r="'+r+'" fill="none" stroke="#e3eeec" stroke-width="6"/>'+
+    '<circle cx="27" cy="27" r="'+r+'" fill="none" stroke="#3b6e6c" stroke-width="6" stroke-linecap="round" stroke-dasharray="'+(c*pct).toFixed(1)+' '+c.toFixed(1)+'" transform="rotate(-90 27 27)"/></svg>';
+}
+function viewToday(){
+  var html=welcomeBanner();
+  var active=HABITS.filter(function(h){ return h.idx<=state.stage && h.idx<HABITS.length; });
+  var doneN=active.filter(function(h){ return doneToday(h.id); }).length;
+  var practiced=activeDates().length;
+  html+='<div class="summary">'+ringSVG(doneN,active.length)+'<p><b>'+doneN+' of '+active.length+'</b> rituals done today<br><span class="small">'+practiced+' day'+(practiced===1?'':'s')+' practised so far · no streaks to lose, ever</span></p></div>';
+  if(state.stage<HABITS.length){
+    html+='<h2 class="section-h">Your current focus</h2>'+card(HABITS[state.stage]);
+  } else {
+    html+='<div class="card focus"><h3>All 90 practice days complete 🎉</h3><p class="sub">Every ritual below is established. Use your Weekly Self-Audit to keep the ones that serve you, shrink the ones that don\'t, and retire anything you\'ve outgrown.</p></div>';
+  }
+  var est=HABITS.filter(function(h){ return h.idx<state.stage; }).sort(function(a,b){ return a.order-b.order; });
+  if(!est.length){
+    html+='<p class="empty">As each habit becomes established, it joins your daily rituals here — arranged by morning, daytime and evening, like a stack you build one layer at a time.</p>';
+  } else {
+    ['morning','day','evening','weekly'].forEach(function(g){
+      var list=est.filter(function(h){ return h.time===g; }); if(!list.length) return;
+      html+='<h2 class="section-h">'+TIME_LABEL[g]+'<small>'+list.filter(function(h){return doneToday(h.id);}).length+'/'+list.length+' done</small></h2>';
+      list.forEach(function(h){ html+=card(h); });
+    });
+  }
+  html+='<p class="small" style="text-align:center;margin-top:24px">Your progress lives only on this device. Back it up anytime from ⚙ Settings.</p>';
+  return html;
+}
+function viewJourney(j){
+  var J=JOURNEYS[j], first=journeyFirst(j), list=HABITS.filter(function(h){ return h.j===j; });
+  var est=list.filter(function(h){ return h.idx<state.stage; }).length;
+  var html='<div class="j-head"><p class="eyebrow">Journey '+(j+1)+' · '+J.range+' · '+J.req+' practice days per habit</p><h2>'+J.icon+' '+esc(J.title)+'</h2><p>'+esc(J.blurb)+'</p>'+
+    '<div class="j-meter"><div style="width:'+(est/list.length*100)+'%"></div></div><p class="small" style="color:#d7ebe9">'+est+' of '+list.length+' habits established'+(est===list.length?' · Journey complete ✓':'')+'</p></div>';
+  if(!journeyUnlocked(j)){
+    html+='<div class="banner" style="background:#faf5f0;border-color:var(--line)"><h3 style="color:var(--teal-d)">Unlocks after Journey '+j+'</h3><p>This chapter opens on its own when you finish the one before it. There\'s nothing to rush — each habit gets the time it needs.</p>'+
+      '<div class="row"><button class="pill-btn sec" data-act="preview-on">Preview all journeys (testing)</button></div></div>';
+    list.forEach(function(h){ html+=lockedCard(h); });
+    return html;
+  }
+  list.forEach(function(h){ html+=card(h); });
+  return html;
+}
+function lockedCard(h){
+  var prev = h.idx>0 ? HABITS[h.idx-1].title : '';
+  return '<div class="lock-card"><p class="eyebrow">🔒 '+TIME_LABEL[h.time]+'</p><h3>'+esc(h.title)+'</h3><p>'+esc(h.sub)+'</p><p>Unlocks after you establish “'+esc(prev)+'”.</p></div>';
+}
+function card(h){
+  var st=statusOf(h.idx);
+  if(st==='locked' && !state.preview) return lockedCard(h);
+  var tiny=isTiny(h), mode=doneToday(h.id), k=todayKey();
+  var tag = st==='focus' ? '<span class="tag tag-focus">Current focus</span>' : st==='est' ? '<span class="tag tag-est">Established ✓</span>' : '<span class="tag tag-prev">Preview</span>';
+  var focus='';
+  if(st==='focus'){
+    var dots='';
+    for(var i=0;i<h.req;i++){ var full=i<state.stageDays, td=full && i===state.stageDays-1 && state.creditDate===k; dots+='<span class="dot'+(full?' full':'')+(td?' today':'')+'"></span>'; }
+    var msg;
+    if(state.advancedOn===k && state.creditDate===k) msg='Just unlocked today. Feel free to try it now — your counted days begin tomorrow.';
+    else if(state.creditDate===k) msg='Today counted ✓ '+(h.req-state.stageDays)+' more practice day'+(h.req-state.stageDays===1?'':'s')+' and this becomes part of you.';
+    else msg='Practice day '+(state.stageDays+1)+' of '+h.req+'. A missed day only pauses things — it never resets them.';
+    focus='<div class="focus-box"><div class="dots" aria-label="'+state.stageDays+' of '+h.req+' practice days">'+dots+'</div><p>'+msg+'</p></div>';
+  }
+  var timer='';
+  if(h.timer){
+    var tot=timerTotal(h);
+    timer='<div class="timer">'+(h.breath?'<div class="breath-wrap"><div class="breath-circle" id="bc-'+h.id+'"></div></div>':'')+
+      '<div class="t-display" id="td-'+h.id+'">'+fmt(tot)+'</div>'+
+      '<div class="t-phase" id="tp-'+h.id+'">'+(h.breath?'Tap start and follow the circle':'')+'</div>'+
+      '<div class="t-btns"><button id="tb-'+h.id+'" data-act="tstart" data-id="'+h.id+'">Start</button><button class="sec" data-act="treset" data-id="'+h.id+'">Reset</button></div>'+
+      '<p class="t-hint">'+(h.breath?'A singing-bowl chime marks the end.':'A soft ping at halfway, a singing-bowl chime at the end.')+'</p></div>';
+  }
+  var tinyBtn = isRough()
+    ? '<button class="ghost" disabled>☾ Rough day: tiny is on</button>'
+    : '<button class="ghost" data-act="tiny" data-id="'+h.id+'">'+(tiny?'↺ Back to full version':'Make it tiny')+'</button>';
+  var doneHTML = mode
+    ? '<div class="done-row"><button class="done-btn locked" disabled>Completed Today ✓</button><button class="link" data-act="undo" data-id="'+h.id+'">Undo</button></div>'+(mode==='tiny'?'<p class="tiny-note">Tiny version — counts as a full day.</p>':'')
+    : '<button class="done-btn" data-act="complete" data-id="'+h.id+'">'+(tiny?'I did the tiny version ✓':'I did it ✓')+'</button>';
+  return '<article class="card '+(st==='focus'?'focus':'')+(mode?' is-done':'')+'" id="card-'+h.id+'">'+
+    '<div class="card-top"><span class="time">'+TIME_LABEL[h.time]+' · Habit '+(h.idx+1)+'</span>'+tag+'</div>'+
+    '<h3>'+esc(h.title)+'</h3><p class="sub">'+esc(h.sub)+'</p>'+focus+
+    '<p class="cue"><strong>Cue:</strong> '+esc(h.cue)+'</p>'+
+    '<div class="version'+(tiny?' v-tiny':'')+'"><span class="v-label">'+(tiny?'Tiny version · about 60 seconds':'Full version')+'</span><p>'+esc(tiny?h.tiny:h.std)+'</p></div>'+
+    '<div class="row">'+tinyBtn+'<button class="ghost" data-act="letter" data-id="'+h.id+'">Read Full Coaching Letter</button></div>'+
+    timer+
+    '<label class="note-wrap"><span>Today\'s reflection <em class="saved" id="sv-'+h.id+'">saved</em></span><input class="note" type="text" data-note="'+h.id+'" maxlength="240" placeholder="One line, just for you…" value="'+esc(noteOf(h.id))+'"></label>'+
+    doneHTML+'</article>';
+}
+
+/* ---------- 11. Modals ---------- */
+let lastFocus=null;
+function showModal(html){
+  lastFocus=document.activeElement;
+  $('#sheetBody').innerHTML=html;
+  $('#modal').hidden=false;
+  document.body.style.overflow='hidden';
+  var s=document.querySelector('.sheet'); if(s) s.scrollTop=0;
+}
+function closeModal(){
+  $('#modal').hidden=true; document.body.style.overflow='';
+  if(!state.onboarded){ state.onboarded=true; save(); }
+  try { if(lastFocus && lastFocus.focus) lastFocus.focus(); } catch(e){}
+}
+function openLetter(id){
+  var h=byId(id); if(!h) return; var J=JOURNEYS[h.j];
+  var past=[]; Object.keys(state.notes).sort().reverse().forEach(function(k){ var n=state.notes[k]; if(n && n[id] && past.length<10) past.push('<li><span>'+esc(prettyKey(k))+'</span>'+esc(n[id])+'</li>'); });
+  showModal('<p class="eyebrow">Journey '+(h.j+1)+' · '+esc(J.title)+' · Habit '+(h.idx+1)+'</p><h2 id="sheetTitle">'+esc(h.title)+'</h2>'+
+    '<div class="letter"><p class="salute">Dear '+(state.name?esc(state.name):'friend')+',</p>'+
+    '<h4>The science of why</h4><p>'+esc(h.letter[0])+'</p>'+
+    '<h4>Habit stacking &amp; setting the stage</h4><p>'+esc(h.letter[1])+'</p>'+
+    '<h4>Your if–then plan for hard days</h4><p>'+esc(h.letter[2])+'</p>'+
+    '<p class="sign">With warmth,<br>Your Sanctuary coach</p></div>'+
+    '<div class="versions"><div><b>Your cue</b><p>'+esc(h.cue)+'</p></div><div><b>Full version</b><p>'+esc(h.std)+'</p></div><div><b>Tiny version (counts fully)</b><p>'+esc(h.tiny)+'</p></div></div>'+
+    (past.length?'<div class="past"><h4 class="eyebrow">Your reflections on this ritual</h4><ul>'+past.join('')+'</ul></div>':''));
+}
+function celebrate(h){
+  var nextH = h.idx+1<HABITS.length ? HABITS[h.idx+1] : null;
+  var journeyDone = !nextH || nextH.j!==h.j;
+  var J=JOURNEYS[h.j];
+  var body='<div class="celebrate"><p class="big">'+(journeyDone?'🏔':'🌿')+'</p>';
+  if(!nextH){
+    body+='<h2 id="sheetTitle">Ninety practice days, complete.</h2><p>“'+esc(h.title)+'” is established, and with it, the whole program. '+esc(J.outro)+'</p><p class="small">Thank you for being so patient and kind with yourself along the way.</p>';
+  } else if(journeyDone){
+    body+='<h2 id="sheetTitle">Journey '+(h.j+1)+' complete</h2><p>“'+esc(h.title)+'” is now part of you. '+esc(J.outro)+'</p><p><b>Journey '+(nextH.j+1)+': '+esc(JOURNEYS[nextH.j].title)+'</b> is now open, beginning with <b>'+esc(nextH.title)+'</b>.</p>';
+  } else {
+    body+='<h2 id="sheetTitle">A new ritual is yours</h2><p>“'+esc(h.title)+'” is now established. It stays in your daily rituals, and its tiny version is always there for hard days.</p><p>Your next focus is <b>'+esc(nextH.title)+'</b>. Your counted days on it begin tomorrow — no rush.</p>';
+  }
+  body+='</div><div class="btn-col">'+(nextH?'<button class="primary" data-act="letter" data-id="'+nextH.id+'">Read the next coaching letter</button>':'')+'<button data-act="close">Back to my rituals</button></div>';
+  setTimeout(function(){ playBowl(); },150);
+  showModal(body);
+}
+function openOnboarding(){
+  showModal('<p class="eyebrow">Welcome</p><h2 id="sheetTitle">Your Sanctuary</h2>'+
+    '<p>A free, private 90-day program: four journeys, twenty small rituals, one at a time.</p>'+
+    '<ul class="how"><li><b>Progress counts practice days, not calendar days.</b> Each habit needs '+JOURNEYS[0].req+'–'+JOURNEYS[1].req+' practice days, then the next one opens automatically.</li>'+
+    '<li><b>Missing a day only pauses things.</b> Nothing ever resets to zero. The one gentle rule is: try not to miss twice.</li>'+
+    '<li><b>Tiny counts.</b> On hard days, any ritual\'s 60-second tiny version counts as a full day.</li>'+
+    '<li><b>Everything stays on this phone.</b> No account, no tracking. Use Export to back up.</li></ul>'+
+    '<label class="field"><span>What should your coach call you? (saved inside your backups, so each phone\'s file is clearly yours)</span><input type="text" id="nameInput" maxlength="40" autocomplete="given-name" placeholder="Your first name"></label>'+
+    '<div class="btn-col"><button class="primary" data-act="save-name">Begin my first ritual</button></div>');
+}
+function openSettings(){
+  var J=journeyUnlocked;
+  showModal('<p class="eyebrow">Settings &amp; backup</p><h2 id="sheetTitle">Your Sanctuary</h2>'+
+    '<label class="field"><span>Your name (shown in letters and saved in backups)</span><input type="text" id="nameInput" maxlength="40" value="'+esc(state.name)+'" placeholder="Your first name"></label>'+
+    '<div class="btn-col"><button data-act="save-name">Save name</button></div>'+
+    '<div class="switch-row"><p>Chimes<small>Soft halfway ping and singing-bowl chime. On iPhone, the silent switch must be off to hear them.</small></p><button class="sw" data-act="sound" aria-pressed="'+(state.sound?'true':'false')+'" aria-label="Chimes"></button></div>'+
+    '<div class="btn-col"><button data-act="test-ping">Play halfway ping</button><button data-act="test-bowl">Play singing-bowl chime</button></div>'+
+    '<div class="switch-row"><p>Preview all journeys<small>For testing: read and try every habit. Preview completions don\'t move your real progress.</small></p><button class="sw" data-act="preview" aria-pressed="'+(state.preview?'true':'false')+'" aria-label="Preview all journeys"></button></div>'+
+    '<h4 class="eyebrow" style="margin-top:22px">Backup '+(state.name?'for '+esc(state.name):'')+'</h4>'+
+    '<p class="small">Each phone keeps its own progress. A backup file is named with your name and today\'s date. Importing always asks first, and warns you if the file belongs to someone else.</p>'+
+    '<div class="btn-col"><button class="primary" data-act="export">Export progress (save file)</button><button data-act="copy">Copy backup as text</button><button data-act="import-file">Import backup from file</button></div>'+
+    '<label class="field"><span>Or paste backup text here</span><textarea id="importText" placeholder="Paste the backup text, then tap Import pasted backup"></textarea></label>'+
+    '<div class="btn-col"><button data-act="import-text">Import pasted backup</button></div>'+
+    '<h4 class="eyebrow" style="margin-top:22px">Start over</h4>'+
+    '<div class="btn-col"><button class="danger" data-act="reset-all">Erase all progress on this phone</button></div>'+
+    '<p class="small" style="text-align:center;margin-top:18px">Sanctuary Rituals · open source · no accounts, no ads, no paywalls, no tracking.</p>');
+}
+
+/* ---------- 12. Backup: export / import ---------- */
+function slug(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+function backupPayload(){ return { app:'sanctuary-rituals', format:2, exportedAt:new Date().toISOString(), owner:state.name||'', state:state }; }
+function backupName(){ return 'sanctuary-'+(slug(state.name)||'backup')+'-'+todayKey()+'.json'; }
+function exportData(){
+  var json=JSON.stringify(backupPayload(),null,2), name=backupName();
+  try {
+    var blob=new Blob([json],{type:'application/json'});
+    var file=null; try { file=new File([blob],name,{type:'application/json'}); } catch(e){}
+    if(file && navigator.canShare && navigator.canShare({files:[file]}) && navigator.share){
+      navigator.share({files:[file], title:'Sanctuary Rituals backup'}).then(function(){ toast('Backup shared — save it somewhere safe.'); })
+        .catch(function(err){ if(!err || err.name!=='AbortError') downloadBlob(blob,name); });
+      return;
+    }
+    downloadBlob(blob,name);
+  } catch(e){ copyText(json); }
+}
+function downloadBlob(blob,name){
+  try {
+    var url=URL.createObjectURL(blob), a=document.createElement('a');
+    a.href=url; a.download=name; document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); },1500);
+    toast('Saved '+name);
+  } catch(e){ toast('Download isn\'t available here — try "Copy backup as text" instead.'); }
+}
+function copyText(text){
+  function fallback(){
+    var ta=document.createElement('textarea'); ta.value=text; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select(); try { ta.setSelectionRange(0,text.length); } catch(e){}
+    var ok=false; try { ok=document.execCommand('copy'); } catch(e){}
+    ta.remove(); toast(ok ? 'Backup copied — paste it into a note or message to keep it safe.' : 'Couldn\'t copy automatically. Please use Export instead.');
+  }
+  try {
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ toast('Backup copied — paste it into a note or message to keep it safe.'); }, fallback);
+    } else fallback();
+  } catch(e){ fallback(); }
+}
+function importPayload(text){
+  var data;
+  try { data=JSON.parse(String(text||'').trim()); } catch(e){ toast('That doesn\'t look like a Sanctuary backup. Nothing was changed.'); return; }
+  var incoming = data && data.state ? data.state : data;
+  if(!isObj(incoming) || typeof incoming.stage==='undefined' || !isObj(incoming.done)){ toast('That doesn\'t look like a Sanctuary backup. Nothing was changed.'); return; }
+  var owner = (data && typeof data.owner==='string' && data.owner) ? data.owner : (incoming.name||'');
+  var when = data && data.exportedAt ? new Date(data.exportedAt).toLocaleString() : 'an unknown date';
+  var mine = state.name;
+  if(owner && mine && owner.trim().toLowerCase()!==mine.trim().toLowerCase()){
+    if(!window.confirm('Careful: this backup belongs to '+owner+', but this phone is set up for '+mine+'.\n\nImporting it will REPLACE '+mine+'\'s progress on this phone with '+owner+'\'s.\n\nImport anyway?')) { toast('Nothing was changed.'); return; }
+  } else {
+    if(!window.confirm('Replace the progress on this phone with the backup'+(owner?' for '+owner:'')+' from '+when+'?')) { toast('Nothing was changed.'); return; }
+  }
+  var next=migrate(incoming);
+  next.lastOpen=new Date().toDateString();
+  next.onboarded=true;
+  if(!next.name && mine) next.name=mine;
+  state=next; T=null; save(); closeModal(); tab='today'; render();
+  toast('Backup restored'+(state.name?' for '+state.name:'')+'. Welcome back. 🌿');
+}
+
+/* ---------- 13. Toast ---------- */
+let toastTimer=null;
+function toast(msg,ms){
+  var t=$('#toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('show'); }, ms||2800);
+}
+
+/* ---------- 14. Events ---------- */
+document.addEventListener('click', function(e){
+  var el=e.target.closest('[data-act]'); if(!el) return;
+  var act=el.getAttribute('data-act'), id=el.getAttribute('data-id');
+  unlockAudio();
+  switch(act){
+    case 'tab': tab=el.getAttribute('data-tab'); render(); window.scrollTo({top:0,behavior:'smooth'}); break;
+    case 'complete': complete(id); break;
+    case 'undo': undo(id); break;
+    case 'tiny': {
+      var k=todayKey(); if(state.tiny.date!==k) state.tiny={date:k,ids:{}};
+      if(state.tiny.ids[id]) delete state.tiny.ids[id]; else state.tiny.ids[id]=true;
+      if(T && T.id===id && !T.running){ T=null; }
+      save(); render(); break;
+    }
+    case 'rough': {
+      var k2=todayKey(); var on=!isRough(); state.rough={date:k2,on:on};
+      if(T && !T.running){ T=null; }
+      save(); render(); toast(on ? 'Rough day mode: everything is tiny today, and every tiny ritual counts fully.' : 'Rough day mode off. Go gently.'); break;
+    }
+    case 'welcome-tiny': state.rough={date:todayKey(),on:true}; state.welcomeSeen=todayKey(); save(); render(); toast('Today is a tiny day. One small ritual is plenty.'); break;
+    case 'welcome-ok': state.welcomeSeen=todayKey(); save(); render(); break;
+    case 'letter': openLetter(id); break;
+    case 'tstart': timerStart(id); break;
+    case 'treset': timerReset(id); break;
+    case 'close': closeModal(); break;
+    case 'settings': openSettings(); break;
+    case 'save-name': {
+      var inp=document.getElementById('nameInput'); state.name=inp ? inp.value.trim().slice(0,40) : state.name;
+      state.onboarded=true; save(); closeModal(); render(); toast(state.name ? 'Lovely to meet you, '+state.name+'.' : 'All set.'); break;
+    }
+    case 'sound': state.sound=!state.sound; save(); el.setAttribute('aria-pressed',state.sound?'true':'false'); if(state.sound) playPing(); break;
+    case 'test-ping': if(!state.sound) toast('Chimes are switched off.'); playPing(); break;
+    case 'test-bowl': if(!state.sound) toast('Chimes are switched off.'); playBowl(); break;
+    case 'preview': state.preview=!state.preview; save(); el.setAttribute('aria-pressed',state.preview?'true':'false'); render(); break;
+    case 'preview-on': state.preview=true; save(); render(); toast('Preview on — switch it off any time in ⚙ Settings.'); break;
+    case 'export': exportData(); break;
+    case 'copy': copyText(JSON.stringify(backupPayload())); break;
+    case 'import-file': $('#importFile').value=''; $('#importFile').click(); break;
+    case 'import-text': { var ta=document.getElementById('importText'); importPayload(ta?ta.value:''); break; }
+    case 'reset-all': {
+      var ans=window.prompt('This erases all progress, notes and settings on this phone. It cannot be undone.\n\nType ERASE to confirm.');
+      if(ans && ans.trim().toUpperCase()==='ERASE'){ var nm=state.name; state=defaultState(); state.name=nm; state.onboarded=true; state.lastOpen=new Date().toDateString(); T=null; save(); closeModal(); tab='today'; render(); toast('A fresh start. Welcome.'); }
+      else toast('Nothing was erased.');
+      break;
+    }
+  }
+});
+$('#importFile').addEventListener('change', function(e){
+  var f=e.target.files && e.target.files[0]; if(!f) return;
+  var r=new FileReader();
+  r.onload=function(){ importPayload(r.result); };
+  r.onerror=function(){ toast('Couldn\'t read that file. Nothing was changed.'); };
+  r.readAsText(f);
+});
+let noteTimer=null;
+document.addEventListener('input', function(e){
+  var el=e.target; if(!el.classList || !el.classList.contains('note')) return;
+  var id=el.getAttribute('data-note'), k=todayKey(), v=el.value.slice(0,240);
+  if(!state.notes[k]) state.notes[k]={};
+  if(v.trim()) state.notes[k][id]=v; else { delete state.notes[k][id]; if(!Object.keys(state.notes[k]).length) delete state.notes[k]; }
+  clearTimeout(noteTimer);
+  noteTimer=setTimeout(function(){ save(); var s=document.getElementById('sv-'+id); if(s){ s.classList.add('show'); setTimeout(function(){ s.classList.remove('show'); },1200); } }, 400);
+});
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape' && !$('#modal').hidden) closeModal();
+  if(e.key==='Enter' && e.target && e.target.id==='nameInput'){ var b=document.querySelector('[data-act="save-name"]'); if(b) b.click(); }
+});
+function onWake(){
+  if(checkDay()){ render(); }
+  else if(T){ tick(); }
+  if(T && T.running) keepAwake();
+}
+document.addEventListener('visibilitychange', function(){ if(!document.hidden) onWake(); });
+window.addEventListener('focus', onWake);
+window.addEventListener('pageshow', onWake);
+setInterval(tick, 250);
+setInterval(function(){ if(checkDay()) render(); }, 30000);
+
+/* ---------- 15. Home-screen icon (drawn locally, no files) ---------- */
+(function(){
+  try {
+    var c=document.createElement('canvas'); c.width=c.height=180; var x=c.getContext('2d');
+    x.fillStyle='#3b6e6c'; x.fillRect(0,0,180,180);
+    x.fillStyle='#d96b43'; x.beginPath(); x.arc(90,92,30,0,Math.PI*2); x.fill();
+    x.fillStyle='#fdf8f4'; x.beginPath(); x.moveTo(0,120); x.quadraticCurveTo(90,92,180,120); x.lineTo(180,180); x.lineTo(0,180); x.closePath(); x.fill();
+    x.fillStyle='#e3eeec'; x.beginPath(); x.moveTo(0,146); x.quadraticCurveTo(90,124,180,146); x.lineTo(180,180); x.lineTo(0,180); x.closePath(); x.fill();
+    var url=c.toDataURL('image/png');
+    ['apple-touch-icon','icon'].forEach(function(rel){ var l=document.createElement('link'); l.rel=rel; l.href=url; document.head.appendChild(l); });
+  } catch(e){}
+})();
+
+/* ---------- 16. Start ---------- */
+checkDay();
+tab='today';
+render();
+if(!state.onboarded && !state.name){ openOnboarding(); }
+</script>
 </body>
 </html>
